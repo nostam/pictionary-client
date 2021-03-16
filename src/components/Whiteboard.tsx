@@ -16,6 +16,7 @@ function Whiteboard() {
   const [stroke, setStroke] = useState<number>(12);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+
   useEffect(() => {
     console.log("init canvas");
     const canvas = canvasRef.current!;
@@ -27,6 +28,7 @@ function Whiteboard() {
     const context = canvas.getContext("2d")!;
 
     context.lineCap = "round";
+    context.lineJoin = "round";
     context.strokeStyle = color;
     context.lineWidth = stroke;
     contextRef.current = context;
@@ -49,8 +51,8 @@ function Whiteboard() {
   function finishDrawing(e: MouseEvent) {
     contextRef.current!.closePath();
     setIsDrawing(false);
-    const img = canvasRef.current!.toDataURL("image/webp", 0.75); // firefox not support
-    socket.emit("canvasData", img);
+    const dataURL = canvasRef.current!.toDataURL("image/webp", 0.75); // firefox not support
+    setTimeout(() => socket.emit("canvasData", dataURL), 500);
   }
   function draw(e: MouseEvent) {
     if (!isDrawing) return;
