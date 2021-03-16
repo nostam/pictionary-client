@@ -1,0 +1,56 @@
+#canvas {
+  border: 1px dashed red;
+  overflow: hidden;
+  height: calc(100vh - 64px);
+  #canvas {
+    z-index: 0;
+  }
+
+  #drawingTools {
+    z-index: 10;
+    height: 48px;
+    bottom: 200px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+  #colorPalettes,
+  #brush {
+    margin-left: 2rem;
+    display: flex;
+    flex-direction: row;
+    box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25),
+      0 8px 16px -8px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+  }
+  #brush {
+    padding: 1rem 1rem 4rem;
+    width: 300px;
+  }
+  #colorPalettes {
+    padding: 1rem;
+    width: 264px;
+    height: 100%;
+
+    #currentColor {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      flex: 1 0 auto;
+    }
+
+    #palettes {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      .color {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+}
