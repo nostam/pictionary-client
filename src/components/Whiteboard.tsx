@@ -2,7 +2,9 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import io from "socket.io-client";
 
 type Coordinate = { x: number; y: number };
-
+const socket = io(process.env.REACT_APP_API_URL!, {
+  transports: ["websocket"],
+});
 function Whiteboard() {
   const width = 1500;
   const height = 1000;
@@ -31,9 +33,6 @@ function Whiteboard() {
   }, []);
 
   useEffect(() => {
-    let socket = io(process.env.REACT_APP_API_URL!, {
-      transports: ["websocket"],
-    });
     const room = "test";
     socket.emit("joinRoom", { room });
     return () => {
@@ -41,17 +40,19 @@ function Whiteboard() {
     };
   }, []);
 
-  function handleMouseDown(e: MouseEvent) {
+  function startDrawing(e: MouseEvent) {
     const { offsetX, offsetY } = e;
     contextRef.current!.beginPath();
     contextRef.current!.moveTo(offsetX, offsetY);
     setIsDrawing(true);
   }
-  function handleMouseUp(e: MouseEvent) {
+  function finishDrawing(e: MouseEvent) {
     contextRef.current!.closePath();
     setIsDrawing(false);
+    const img = canvasRef.current!.toDataURL("image/webp", 0.75); // firefox not support
+    socket.emit("canvasData", img);
   }
-  function handleMouseMove(e: MouseEvent) {
+  function draw(e: MouseEvent) {
     if (!isDrawing) return;
     const { offsetX, offsetY } = e;
     contextRef.current!.lineTo(offsetX, offsetY);
@@ -64,9 +65,9 @@ function Whiteboard() {
         ref={canvasRef}
         height={height}
         width={width}
-        onMouseDown={(e) => handleMouseDown(e.nativeEvent)}
-        onMouseUp={(e) => handleMouseUp(e.nativeEvent)}
-        onMouseMove={(e) => handleMouseMove(e.nativeEvent)}
+        onMouseDown={(e) => startDrawing(e.nativeEvent)}
+        onMouseUp={(e) => finishDrawing(e.nativeEvent)}
+        onMouseMove={(e) => draw(e.nativeEvent)}
       />
     </div>
   );
