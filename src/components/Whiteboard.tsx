@@ -32,6 +32,13 @@ function Whiteboard() {
     context.strokeStyle = color;
     context.lineWidth = stroke;
     contextRef.current = context;
+
+    //receiver side
+    socket.on("canvasData", (dataURL: string) => {
+      const img = new Image();
+      img.src = dataURL;
+      img.onload = () => context!.drawImage(img, 0, 0);
+    });
   }, []);
 
   useEffect(() => {
