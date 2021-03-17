@@ -1,8 +1,8 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import io from "socket.io-client";
-import Container from "@material-ui/core/Container";
+import { Container, Slider, Popover, Badge } from "@material-ui/core";
+import { Create, LayersClear, BorderColor } from "@material-ui/icons";
 import "../styles/Whiteboard.scss";
-import Slider from "@material-ui/core/Slider";
 
 interface IColor {
   label: string;
@@ -16,19 +16,19 @@ const socket = io(process.env.REACT_APP_API_URL!, {
 const marks = [
   {
     value: 12,
-    label: "12px",
+    label: "12",
   },
   {
     value: 24,
-    label: "24px",
+    label: "24",
   },
   {
     value: 48,
-    label: "48px",
+    label: "48",
   },
   {
     value: 96,
-    label: "96px",
+    label: "96",
   },
 ];
 
@@ -66,6 +66,8 @@ function Whiteboard() {
   >();
   const [color, setColor] = useState<string>("black");
   const [stroke, setStroke] = useState<number>(12);
+  const [showBrush, setShowBrush] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -120,13 +122,58 @@ function Whiteboard() {
     contextRef.current!.lineTo(offsetX, offsetY);
     contextRef.current!.stroke();
   }
+  const handleClickPen = (e: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
 
   return (
     <>
       <div id="whiteboard">
         <Container fixed id="drawingTools">
+          <Popover
+            open={Boolean(anchorEl)}
+            anchorEl={anchorEl}
+            onClose={() => setAnchorEl(null)}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+          >
+            <div id="brush" style={{ height: "200px", padding: "1rem" }}>
+              <Slider
+                value={stroke}
+                getAriaValueText={valuetext}
+                aria-labelledby="discrete-slider-custom"
+                step={4}
+                valueLabelDisplay="on"
+                marks={marks}
+                min={4}
+                max={96}
+                orientation="vertical"
+                onChange={(e, value) => {
+                  if (typeof value === "number") setStroke(value);
+                }}
+              />
+            </div>
+          </Popover>
+          <div onClick={handleClickPen}>
+            <Badge
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              badgeContent={stroke}
+              overlap="circle"
+              color="primary"
+            >
+              <BorderColor id="currentColor" style={{ color }} />
+            </Badge>
+          </div>
           <div id="colorPalettes">
-            <div id="currentColor" style={{ backgroundColor: color }}></div>
             <div id="palettes">
               {colors.map((c) => (
                 <div
@@ -137,22 +184,6 @@ function Whiteboard() {
                 />
               ))}
             </div>
-          </div>
-          <div id="brush">
-            <Slider
-              value={stroke}
-              getAriaValueText={valuetext}
-              aria-labelledby="discrete-slider-custom"
-              step={4}
-              valueLabelDisplay="on"
-              marks={marks}
-              min={4}
-              max={96}
-              orientation="vertical"
-              onChange={(e, value) => {
-                if (typeof value === "number") setStroke(value);
-              }}
-            />
           </div>
         </Container>
         <canvas

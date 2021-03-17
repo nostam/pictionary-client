@@ -3,48 +3,52 @@
   height: calc(100vh - 64px);
   display: flex;
   flex-direction: row;
-}
-#drawingTools {
-  z-index: 10;
-  padding: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  border: 1px dashed red;
-}
-#colorPalettes,
-#brush {
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  // box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25),
-  //   0 8px 16px -8px rgba(0, 0, 0, 0.3);
-  // border-radius: 4px;
-}
-#brush {
-  padding: 2rem 1rem 1rem;
-  width: 48px;
-  height: 200px;
-}
-#colorPalettes {
-  padding: 1rem;
-  width: 48px;
-
-  #currentColor {
-    width: 48px;
-    height: 48px;
+  #drawingTools {
+    z-index: 10;
+    padding: 0;
+    height: 100%;
     display: flex;
-  }
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: center;
+    align-items: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    #colorPalettes,
+    #brush {
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      // box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25),
+      //   0 8px 16px -8px rgba(0, 0, 0, 0.3);
+    }
+    #brush {
+      padding: 1rem;
+      height: 160px;
+    }
+    #currentColor {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid lightgray;
+      padding: 8px;
+    }
+    #colorPalettes {
+      padding: 1rem;
+      width: 48px;
 
-  #palettes {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    .color {
-      width: 24px;
-      height: 24px;
+      #palettes {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        .color {
+          width: 24px;
+          height: 24px;
+        }
+      }
     }
   }
 }
