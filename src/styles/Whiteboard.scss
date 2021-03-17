@@ -1,42 +1,40 @@
 #whiteboard {
   overflow: hidden;
   height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: row;
 }
 #drawingTools {
   z-index: 10;
-  height: 48px;
-  bottom: 100px;
-  position: relative;
+  padding: 0;
+  height: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
-  padding-left: 4rem;
-  padding-right: 4rem;
+  border: 1px dashed red;
 }
 #colorPalettes,
 #brush {
   z-index: 10;
-  margin-left: 2rem;
   display: flex;
-  flex-direction: row;
-  box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25),
-    0 8px 16px -8px rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
+  flex-direction: column;
+  // box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25),
+  //   0 8px 16px -8px rgba(0, 0, 0, 0.3);
+  // border-radius: 4px;
 }
 #brush {
-  padding: 1rem 2rem 4rem;
-  width: 300px;
+  padding: 2rem 1rem 1rem;
+  width: 48px;
+  height: 200px;
 }
 #colorPalettes {
   padding: 1rem;
-  width: 264px;
-  height: 100%;
+  width: 48px;
 
   #currentColor {
     width: 48px;
     height: 48px;
     display: flex;
-    flex: 1 0 auto;
   }
 
   #palettes {

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import io from "socket.io-client";
+import Container from "@material-ui/core/Container";
 import "../styles/Whiteboard.scss";
 import Slider from "@material-ui/core/Slider";
 
@@ -22,6 +23,10 @@ const marks = [
     label: "24px",
   },
   {
+    value: 48,
+    label: "48px",
+  },
+  {
     value: 96,
     label: "96px",
   },
@@ -36,7 +41,6 @@ const colors: IColor[] = [
   { value: "#2196f3", label: "Blue" },
   { value: "#03a9f4", label: "Light Blue" },
   { value: "#00bcd4", label: "Cyan" },
-  { value: "#fff", label: "White" },
   { value: "#009688", label: "Teal" },
   { value: "#4caf50", label: "Green" },
   { value: "#8bc34a", label: "Light Green" },
@@ -45,6 +49,7 @@ const colors: IColor[] = [
   { value: "#ffc107", label: "Amber" },
   { value: "#ff9800", label: "Orange" },
   { value: "#ff5722", label: "Deep Orange" },
+  { value: "#fff", label: "White" },
   { value: "#000", label: "Black" },
 ];
 
@@ -53,7 +58,7 @@ function valuetext(value: number) {
 }
 
 function Whiteboard() {
-  const width = window.innerWidth;
+  const width = window.innerWidth - 48;
   const height = window.innerHeight - 164; // navbar height + drawing tools
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [mouseCoordinates, setMouseCoordinates] = useState<
@@ -107,7 +112,7 @@ function Whiteboard() {
     contextRef.current!.closePath();
     setIsDrawing(false);
     const dataURL = canvasRef.current!.toDataURL("image/webp", 0.75); // firefox does not support
-    setTimeout(() => socket.emit("canvasData", dataURL), 500);
+    setTimeout(() => socket.emit("canvasData", dataURL), 100);
   }
   function draw(e: MouseEvent) {
     if (!isDrawing) return;
@@ -119,6 +124,37 @@ function Whiteboard() {
   return (
     <>
       <div id="whiteboard">
+        <Container fixed id="drawingTools">
+          <div id="colorPalettes">
+            <div id="currentColor" style={{ backgroundColor: color }}></div>
+            <div id="palettes">
+              {colors.map((c) => (
+                <div
+                  className="color"
+                  key={c.label.trim()}
+                  style={{ backgroundColor: c.value }}
+                  onClick={() => setColor(c.value)}
+                />
+              ))}
+            </div>
+          </div>
+          <div id="brush">
+            <Slider
+              value={stroke}
+              getAriaValueText={valuetext}
+              aria-labelledby="discrete-slider-custom"
+              step={4}
+              valueLabelDisplay="on"
+              marks={marks}
+              min={4}
+              max={96}
+              orientation="vertical"
+              onChange={(e, value) => {
+                if (typeof value === "number") setStroke(value);
+              }}
+            />
+          </div>
+        </Container>
         <canvas
           id="canvas"
           ref={canvasRef}
@@ -126,37 +162,6 @@ function Whiteboard() {
           onMouseUp={(e) => finishDrawing(e.nativeEvent)}
           onMouseMove={(e) => draw(e.nativeEvent)}
         />
-      </div>
-      <div id="drawingTools">
-        <div id="colorPalettes">
-          <div id="currentColor" style={{ backgroundColor: color }}></div>
-          <div id="palettes">
-            {colors.map((c) => (
-              <div
-                className="color"
-                key={c.label.trim()}
-                style={{ backgroundColor: c.value }}
-                onClick={() => setColor(c.value)}
-              />
-            ))}
-          </div>
-        </div>
-        <div id="brush">
-          <Slider
-            value={stroke}
-            getAriaValueText={valuetext}
-            aria-labelledby="discrete-slider-custom"
-            step={4}
-            valueLabelDisplay="on"
-            marks={marks}
-            min={4}
-            max={96}
-            onChangeCommitted={(e, value) => {
-              console.log(typeof value === "number");
-              if (typeof value === "number") setStroke(value);
-            }}
-          />
-        </div>
       </div>
     </>
   );
