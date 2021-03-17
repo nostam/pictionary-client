@@ -16,19 +16,19 @@ const socket = io(process.env.REACT_APP_API_URL!, {
 const marks = [
   {
     value: 12,
-    label: "12",
+    label: "12px",
   },
   {
     value: 24,
-    label: "24",
+    label: "24px",
   },
   {
     value: 48,
-    label: "48",
+    label: "48px",
   },
   {
     value: 96,
-    label: "96",
+    label: "96px",
   },
 ];
 
@@ -136,7 +136,7 @@ function Whiteboard() {
             onClose={() => setAnchorEl(null)}
             anchorOrigin={{
               vertical: "top",
-              horizontal: "left",
+              horizontal: "right",
             }}
             transformOrigin={{
               vertical: "top",
@@ -149,7 +149,7 @@ function Whiteboard() {
                 getAriaValueText={valuetext}
                 aria-labelledby="discrete-slider-custom"
                 step={4}
-                valueLabelDisplay="on"
+                valueLabelDisplay="off"
                 marks={marks}
                 min={4}
                 max={96}
