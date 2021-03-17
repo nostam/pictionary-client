@@ -2,7 +2,6 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import io from "socket.io-client";
 import "../styles/Whiteboard.scss";
 import Slider from "@material-ui/core/Slider";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 
 interface IColor {
   label: string;
@@ -15,12 +14,8 @@ const socket = io(process.env.REACT_APP_API_URL!, {
 
 const marks = [
   {
-    value: 8,
-    label: "8px",
-  },
-  {
-    value: 16,
-    label: "16px",
+    value: 12,
+    label: "12px",
   },
   {
     value: 24,
@@ -58,23 +53,23 @@ function valuetext(value: number) {
 }
 
 function Whiteboard() {
-  const width = 10;
-  const height = 10;
+  const width = window.innerWidth;
+  const height = window.innerHeight - 164; // navbar height + drawing tools
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [mouseCoordinates, setMouseCoordinates] = useState<
     Coordinate | undefined
   >();
   const [color, setColor] = useState<string>("black");
-  const [stroke, setStroke] = useState<number>(16);
+  const [stroke, setStroke] = useState<number>(12);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current!;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas.style.width = `${window.innerWidth}px`;
-    canvas.style.height = `${window.innerHeight}px`;
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
     const context = canvas.getContext("2d")!;
     context.lineCap = "round";
@@ -122,14 +117,16 @@ function Whiteboard() {
   }
 
   return (
-    <div id="canvas">
-      <canvas
-        id="canvas"
-        ref={canvasRef}
-        onMouseDown={(e) => startDrawing(e.nativeEvent)}
-        onMouseUp={(e) => finishDrawing(e.nativeEvent)}
-        onMouseMove={(e) => draw(e.nativeEvent)}
-      />
+    <>
+      <div id="whiteboard">
+        <canvas
+          id="canvas"
+          ref={canvasRef}
+          onMouseDown={(e) => startDrawing(e.nativeEvent)}
+          onMouseUp={(e) => finishDrawing(e.nativeEvent)}
+          onMouseMove={(e) => draw(e.nativeEvent)}
+        />
+      </div>
       <div id="drawingTools">
         <div id="colorPalettes">
           <div id="currentColor" style={{ backgroundColor: color }}></div>
@@ -150,8 +147,10 @@ function Whiteboard() {
             getAriaValueText={valuetext}
             aria-labelledby="discrete-slider-custom"
             step={4}
-            valueLabelDisplay="auto"
+            valueLabelDisplay="on"
             marks={marks}
+            min={4}
+            max={96}
             onChangeCommitted={(e, value) => {
               console.log(typeof value === "number");
               if (typeof value === "number") setStroke(value);
@@ -159,7 +158,7 @@ function Whiteboard() {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
