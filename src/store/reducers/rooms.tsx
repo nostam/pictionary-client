@@ -15,12 +15,14 @@ export const roomList = createSlice({
       if (!isExist) {
         state.rooms.push(action.payload);
         return;
+      } else {
+        state.rooms.map((s) => {
+          if (s.slug === action.payload.slug) {
+            s = action.payload;
+          }
+          return s;
+        });
       }
-      state.rooms.map((s) => {
-        if (s.slug === action.payload.slug) {
-          s = action.payload;
-        }
-      });
     },
     removeRoom: (state, action: PayloadAction<IRoom>) => {
       state.rooms = state.rooms.filter(
