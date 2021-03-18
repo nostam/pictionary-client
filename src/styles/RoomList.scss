@@ -1,0 +1,16 @@
+#roomlist-wrapper {
+  padding: 2rem;
+  .room {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .icon {
+    width: 48px;
+    height: 48px;
+    color: grey;
+  }
+}
