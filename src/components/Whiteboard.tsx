@@ -67,6 +67,9 @@ function Whiteboard() {
     setIsDrawing(true);
   }
   function finishDrawing(e: MouseEvent) {
+    const { offsetX, offsetY } = e;
+    contextRef.current!.lineTo(offsetX, offsetY);
+    contextRef.current!.stroke();
     contextRef.current!.closePath();
     setIsDrawing(false);
     const dataURL = canvasRef.current!.toDataURL("image/webp", 0.75); // firefox does not support
@@ -79,7 +82,7 @@ function Whiteboard() {
     contextRef.current!.stroke();
   }
   const handleClickPen = (e: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(e.currentTarget);
+    setShowBrush(e.currentTarget);
   };
 
   return (
