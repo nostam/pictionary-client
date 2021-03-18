@@ -16,11 +16,11 @@ export const roomList = createSlice({
         state.rooms.push(action.payload);
         return;
       } else {
-        state.rooms.map((s) => {
-          if (s.slug === action.payload.slug) {
-            s = action.payload;
+        state.rooms.map((room) => {
+          if (room.slug === action.payload.slug) {
+            room = action.payload;
           }
-          return s;
+          return room;
         });
       }
     },
