@@ -10,14 +10,14 @@ export const roomList = createSlice({
   reducers: {
     updateRoom: (state, action: PayloadAction<IRoom>) => {
       const isExist = state.rooms.find(
-        (room) => room.slug === action.payload.slug
+        (room) => room._id === action.payload._id
       );
       if (!isExist) {
         state.rooms.push(action.payload);
         return;
       } else {
         state.rooms.map((room) => {
-          if (room.slug === action.payload.slug) {
+          if (room._id === action.payload._id) {
             room = action.payload;
           }
           return room;
@@ -26,7 +26,7 @@ export const roomList = createSlice({
     },
     removeRoom: (state, action: PayloadAction<IRoom>) => {
       state.rooms = state.rooms.filter(
-        (room) => room.slug !== action.payload.slug
+        (room) => room._id !== action.payload._id
       );
     },
   },

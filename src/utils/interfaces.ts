@@ -7,7 +7,6 @@ export interface IRooms {
 }
 export interface IRoom {
   _id?: string;
-  slug: string;
   creator?: string;
   users: IUser[];
   endedAt?: Date;
@@ -34,8 +33,8 @@ export interface IUser {
   modifiedAt?: string;
 }
 export enum difficulty {
-  easy,
-  normal,
-  hard,
-  lunatic,
+  easy = "Easy",
+  normal = "Normal",
+  hard = "Hard",
+  lunatic = "Lunatic",
 }

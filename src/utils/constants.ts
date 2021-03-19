@@ -1,4 +1,4 @@
-import { IColor } from "./interfaces";
+import { IColor, difficulty } from "./interfaces";
 
 export const colors: IColor[] = [
   { value: "#f44336", label: "Red" },
@@ -38,4 +38,11 @@ export const marks = [
     value: 96,
     label: "96px",
   },
+];
+
+export const difficulties = [
+  difficulty.easy,
+  difficulty.normal,
+  difficulty.hard,
+  difficulty.lunatic,
 ];
