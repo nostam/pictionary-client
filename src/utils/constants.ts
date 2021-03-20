@@ -1,4 +1,5 @@
 import { IColor, difficulty } from "./interfaces";
+import { green, blue, purple, red } from "@material-ui/core/colors";
 
 export const colors: IColor[] = [
   { value: "#f44336", label: "Red" },
@@ -41,8 +42,8 @@ export const marks = [
 ];
 
 export const difficulties = [
-  difficulty.easy,
-  difficulty.normal,
-  difficulty.hard,
-  difficulty.lunatic,
+  { value: difficulty.easy, color: green[900] },
+  { value: difficulty.normal, color: blue[900] },
+  { value: difficulty.hard, color: purple[900] },
+  { value: difficulty.lunatic, color: red[900] },
 ];
