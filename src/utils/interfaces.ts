@@ -8,13 +8,14 @@ export interface IRooms {
 export interface IRoom {
   _id?: string;
   creator?: string;
-  users: IUser[];
+  users?: IUser[]; //TODO
   endedAt?: Date;
   startedAt?: Date;
-  words: string[];
+  words: string[] | null;
   difficulty: difficulty;
   createdAt?: Date;
   modifiedAt?: Date;
+  status: string | null;
 }
 export interface IUser {
   _id: string;
@@ -37,4 +38,8 @@ export enum difficulty {
   normal = "Normal",
   hard = "Hard",
   lunatic = "Lunatic",
+}
+
+export interface IError {
+  message: string | null;
 }

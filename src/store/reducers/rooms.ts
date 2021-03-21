@@ -33,5 +33,5 @@ export const roomList = createSlice({
 });
 
 export const { updateRoom } = roomList.actions;
-export const selectUser = (state: RootState) => state.rooms;
+export const getAllRooms = (state: RootState) => state.rooms;
 export default roomList.reducer;

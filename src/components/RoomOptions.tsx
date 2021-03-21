@@ -1,4 +1,7 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import {
   Select,
@@ -9,8 +12,8 @@ import {
   Button,
 } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
+import { RootState } from "../store";
 import { difficulties } from "../utils/constants";
-import { difficulty } from "../utils/interfaces";
 
 function getModalStyle() {
   const top = 50;
@@ -57,11 +60,44 @@ interface IProps {
 }
 
 export default function SimpleModal({ open, handleModal }: IProps) {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const game = useSelector((state: RootState) => state.game);
+  const settings = React.useRef(game);
+  const updateGame = React.useCallback(
+    (data) => dispatch({ type: "updateGame", action: data }),
+    [dispatch]
+  );
+  // strict mode warning with material ui styling, will be fixed in @5
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    // setAge(event.target.value as string);
-    console.log(event.target.value);
+
+  const handleChange = (
+    event: React.ChangeEvent<{ value: unknown; name?: string }>
+  ) => {
+    const { name, value } = event.target;
+    if (name) settings.current = { ...settings.current, [name]: value };
+  };
+
+  const createNewGame = async () => {
+    try {
+      const { data } = await axios({
+        method: "post",
+        url: process.env.REACT_APP_API_URL + "/rooms/create",
+        data: settings,
+      });
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleButtonClick = async (event: React.MouseEvent) => {
+    const data = await createNewGame();
+    if (data) {
+      updateGame(data);
+      history.push(`/r/${data._id}`);
+    }
   };
   const body = (
     <div style={modalStyle} className={classes.paper}>
@@ -75,9 +111,10 @@ export default function SimpleModal({ open, handleModal }: IProps) {
           <Select
             labelId="demo-simple-select-outlined-label"
             id="demo-simple-select-outlined"
-            value={difficulty}
+            value={settings.current.difficulty}
             onChange={handleChange}
             label="Difficulty"
+            name="difficulty"
           >
             {difficulties.map((difficulty, i) => (
               <MenuItem
@@ -106,6 +143,7 @@ export default function SimpleModal({ open, handleModal }: IProps) {
         color="primary"
         size="medium"
         className={classes.button}
+        onClick={handleButtonClick}
       >
         Start <PlayArrowIcon />
       </Button>
