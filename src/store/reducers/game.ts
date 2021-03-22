@@ -2,10 +2,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IRoom } from "../../utils/interfaces";
 import { difficulty } from "../../utils/interfaces";
 
-const initialState: IRoom = {
-  words: ["smile", "star"],
-  difficulty: difficulty.easy,
-  status: null,
+interface IProps {
+  game: IRoom;
+}
+
+const initialState: IProps = {
+  game: {
+    words: ["smile", "star"],
+    difficulty: difficulty.easy,
+    status: null,
+  },
 };
 
 export const gameSlice = createSlice({
@@ -13,7 +19,7 @@ export const gameSlice = createSlice({
   initialState,
   reducers: {
     updateGame: (state, action: PayloadAction<IRoom>) => {
-      state = action.payload;
+      state.game = action.payload;
     },
   },
 });

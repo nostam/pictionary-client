@@ -16,6 +16,7 @@ export interface IRoom {
   createdAt?: Date;
   modifiedAt?: Date;
   status: string | null;
+  round?: number;
 }
 export interface IUser {
   _id: string;
@@ -42,4 +43,11 @@ export enum difficulty {
 
 export interface IError {
   message: string | null;
+}
+
+export interface IRoomChat {
+  from: string;
+  message: string;
+  room?: string;
+  round: number;
 }

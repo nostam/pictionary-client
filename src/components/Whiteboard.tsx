@@ -1,26 +1,45 @@
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import io from "socket.io-client";
-import { Container, Slider, Popover, Badge } from "@material-ui/core";
-import { Create, LayersClear, BorderColor } from "@material-ui/icons";
+import { Container, Slider, Popover, Badge, Input } from "@material-ui/core";
+import {
+  Create,
+  LayersClear,
+  BorderColor,
+  LaptopWindowsOutlined,
+} from "@material-ui/icons";
+import axios from "axios";
 import { colors, marks } from "../utils/constants";
+import { IRoom, IRoomChat } from "../utils/interfaces";
 import "../styles/Whiteboard.scss";
 
-type Coordinate = { x: number; y: number };
+// type Coordinate = { x: number; y: number };
 const socket = io(process.env.REACT_APP_API_URL!, {
   transports: ["websocket"],
 });
 
 function valuetext(value: number) {
-  return `${value}°C`;
+  return `${value}px`;
 }
 
 function Whiteboard() {
+  const dispatch = useAppDispatch();
+  const { game } = useAppSelector((state) => state.game);
+
+  // Drawing
   const width = window.innerWidth - 48; // drawing tools
   const height = window.innerHeight - 164; // navbar height + word topic
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
-  const [mouseCoordinates, setMouseCoordinates] = useState<
-    Coordinate | undefined
-  >();
+  // const [mouseCoordinates, setMouseCoordinates] = useState<
+  //   Coordinate | undefined
+  // >();
+  const [logs, setLogs] = useState<IRoomChat[]>([]);
+  const [msg, setMsg] = useState<IRoomChat>({
+    from: "demo",
+    message: "",
+    round: 0,
+    room: "test",
+  });
   const [color, setColor] = useState<string>("black");
   const [stroke, setStroke] = useState<number>(12);
   const [showBrush, setShowBrush] = useState<HTMLDivElement | null>(null);
@@ -52,14 +71,6 @@ function Whiteboard() {
     context.lineWidth = stroke;
   }, [stroke, color]);
 
-  useEffect(() => {
-    const room = "test";
-    socket.emit("joinRoom", { room });
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
   function startDrawing(e: MouseEvent) {
     const { offsetX, offsetY } = e;
     contextRef.current!.beginPath();
@@ -85,10 +96,53 @@ function Whiteboard() {
     setShowBrush(e.currentTarget);
   };
 
+  // Game
+  const updateGame = React.useCallback(
+    (data) => dispatch({ type: "updateGame", action: data }),
+    [dispatch]
+  );
+  useEffect(() => {
+    const room = "test";
+    socket.emit("joinRoom", { room });
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    socket.on("connection", (socketId: string) => {
+      console.log(socketId);
+      setMsg({ ...msg, from: socketId });
+    });
+    socket.on("roomData", (data: IRoom) => {
+      updateGame(data);
+    });
+  }, []);
+  const [word, setWord] = useState<string>("");
+  useEffect(() => {
+    if (!game.round) setWord(game.words![0]);
+  }, [game]);
+
+  // Chat
+  useEffect(() => {
+    socket.on("message", (data: IRoomChat) => {
+      setLogs(logs.concat(data));
+    });
+  }, [logs]);
+  const sendMsg = () => {
+    setLogs(logs.concat(msg));
+    socket.emit("message", msg);
+  };
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMsg({ ...msg, message: e.target.value });
+  };
+  const handleInputMsg = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (e.key === "Enter") sendMsg();
+  };
   return (
     <>
       <div id="whiteboard">
-        <Container fixed id="drawingTools">
+        <Container id="drawingTools">
           <Popover
             open={Boolean(showBrush)}
             anchorEl={showBrush}
@@ -152,6 +206,29 @@ function Whiteboard() {
           onMouseUp={(e) => finishDrawing(e.nativeEvent)}
           onMouseMove={(e) => draw(e.nativeEvent)}
         />
+        <div id="word">
+          <h1>{word}</h1>
+        </div>
+      </div>
+      <div id="sidebar">
+        <div id="timer">
+          <h1>Timer</h1>
+        </div>
+        <div id="chatbox">
+          <div id="messages">
+            {logs.map((l, i) => (
+              <p key={`log${i}`}>{`${l.from}: ${l.message}`}</p>
+            ))}
+          </div>
+          <div id="inputChat">
+            <Input
+              placeholder="Enter your message here"
+              onChange={handleInput}
+              onKeyUp={handleInputMsg}
+              inputProps={{ "aria-label": "description" }}
+            />
+          </div>
+        </div>
       </div>
     </>
   );

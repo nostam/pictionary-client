@@ -1,6 +1,12 @@
+$timer-height: 100px;
+$sendBtn-height: 64px;
+$navbar-height: 64px;
+$sidebar-width: 300px;
+
 #whiteboard {
   overflow: hidden;
-  height: calc(100vh - 64px);
+  width: calc(100vw - #{$sidebar-width});
+  height: calc(100vh - #{$navbar-height});
   display: flex;
   flex-direction: row;
   #drawingTools {
@@ -48,6 +54,46 @@
           height: 24px;
         }
       }
+    }
+  }
+}
+#word {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100px;
+  min-width: calc(100% - #{$sidebar-width});
+  border: 1px dashed red;
+  margin: auto;
+  padding: 1rem;
+  text-align: center;
+}
+#sidebar {
+  position: absolute;
+  right: 0;
+  top: $navbar-height;
+  min-width: $sidebar-width;
+  height: 100%;
+  background-color: lightgray;
+  #timer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: $timer-height;
+  }
+  #chatbox {
+    border: 2px solid black;
+    min-height: calc(100% - #{$timer-height} - #{$sendBtn-height});
+    position: relative;
+    #messages {
+      min-height: calc(100% - #{$sendBtn-height});
+    }
+    #inputChat {
+      padding: 1rem;
+      bottom: 0;
+      position: relative;
+      width: 100%;
     }
   }
 }
