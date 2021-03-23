@@ -15,7 +15,7 @@ export interface IRoom {
   difficulty: difficulty;
   createdAt?: Date;
   modifiedAt?: Date;
-  status: string | null;
+  status?: string;
   round?: number;
 }
 export interface IUser {

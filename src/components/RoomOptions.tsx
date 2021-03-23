@@ -87,7 +87,7 @@ export default function SimpleModal({ open, handleModal }: IProps) {
       const { data } = await axios({
         method: "post",
         url: process.env.REACT_APP_API_URL + "/rooms/create",
-        data: settings,
+        data: { ...settings, status: "waiting" },
       });
       return data;
     } catch (error) {

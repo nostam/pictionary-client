@@ -113,6 +113,7 @@ function Whiteboard() {
       updateGame(data);
     });
   }, [updateGame, msg]);
+
   const [word, setWord] = useState<string>("");
   useEffect(() => {
     if (!game.round) setWord(game.words![0]);

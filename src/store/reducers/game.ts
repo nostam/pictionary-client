@@ -10,7 +10,6 @@ const initialState: IProps = {
   game: {
     words: ["smile", "star"],
     difficulty: difficulty.easy,
-    status: null,
   },
 };
 

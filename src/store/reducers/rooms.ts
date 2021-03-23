@@ -29,9 +29,12 @@ export const roomList = createSlice({
         (room) => room._id !== action.payload._id
       );
     },
+    initList: (state, action) => {
+      state.rooms = action.payload;
+    },
   },
 });
 
-export const { updateRoom } = roomList.actions;
+export const { updateRoom, initList } = roomList.actions;
 export const getAllRooms = (state: RootState) => state.rooms;
 export default roomList.reducer;

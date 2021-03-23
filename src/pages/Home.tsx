@@ -1,4 +1,3 @@
-import React from "react";
 import Container from "@material-ui/core/Container";
 import RoomList from "../components/RoomList";
 import "../styles/Home.scss";

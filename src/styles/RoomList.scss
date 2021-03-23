@@ -1,7 +1,12 @@
 #roomlist-wrapper {
   padding-top: 1rem;
   padding-bottom: 1rem;
+  #rooms-container {
+    display: flex;
+    flex-direction: row;
+  }
   .room {
+    margin-right: 1rem;
     width: 200px;
     height: 200px;
     display: flex;

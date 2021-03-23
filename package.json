@@ -20,6 +20,7 @@
     "@types/socket.io-client": "^1.4.35",
     "axios": "^0.21.1",
     "axios-auth-refresh": "^3.1.0",
+    "dayjs": "^1.10.4",
     "dotenv": "^8.2.0",
     "node-sass": "^5.0.0",
     "react": "^17.0.1",
