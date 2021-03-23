@@ -63,7 +63,7 @@ export default function SimpleModal({ open, handleModal }: IProps) {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const { game } = useAppSelector((state) => state.game);
+  const { game } = useAppSelector((state) => state.current);
   // const settings = React.useRef(game);
   const [settings, setSettings] = React.useState(game);
   const dispatchGame = React.useCallback((data) => dispatch(updateGame(data)), [

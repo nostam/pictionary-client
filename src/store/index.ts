@@ -1,15 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userSlice from "./reducers/user";
-import roomList from "./reducers/rooms";
-import gameSlice from "./reducers/game";
-import errorSlice from "./reducers/error";
+import userReducer from "./reducers/user";
+import roomReducer from "./reducers/rooms";
+import gameReducer from "./reducers/game";
+import statusReducer from "./reducers/status";
 
 const store = configureStore({
   reducer: {
-    user: userSlice,
-    rooms: roomList,
-    game: gameSlice,
-    error: errorSlice,
+    user: userReducer,
+    rooms: roomReducer,
+    current: gameReducer,
+    status: statusReducer,
   },
 });
 

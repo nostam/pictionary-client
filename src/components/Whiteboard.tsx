@@ -2,13 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import io from "socket.io-client";
 import { Container, Slider, Popover, Badge, Input } from "@material-ui/core";
-import {
-  Create,
-  LayersClear,
-  BorderColor,
-  LaptopWindowsOutlined,
-} from "@material-ui/icons";
-import axios from "axios";
+import { LayersClear, BorderColor, Send } from "@material-ui/icons";
 import { colors, marks } from "../utils/constants";
 import { IRoom, IRoomChat } from "../utils/interfaces";
 import "../styles/Whiteboard.scss";
@@ -24,18 +18,17 @@ function valuetext(value: number) {
 
 function Whiteboard() {
   const dispatch = useAppDispatch();
-  const { game } = useAppSelector((state) => state.game);
+  const { game } = useAppSelector((state) => state.current);
 
   // Drawing
-  const width = window.innerWidth - 48; // drawing tools
-  const height = window.innerHeight - 164; // navbar height + word topic
+
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   // const [mouseCoordinates, setMouseCoordinates] = useState<
   //   Coordinate | undefined
   // >();
   const [logs, setLogs] = useState<IRoomChat[]>([]);
   const [msg, setMsg] = useState<IRoomChat>({
-    from: "demo",
+    from: `demo${Math.floor(Math.random() * 10)}`,
     message: "",
     round: 0,
     room: "test",
@@ -47,6 +40,8 @@ function Whiteboard() {
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
 
   useEffect(() => {
+    const width = window.innerWidth - 48; // drawing tools
+    const height = window.innerHeight - 164; // navbar height + word topic
     const canvas = canvasRef.current!;
     canvas.width = width;
     canvas.height = height;
@@ -114,9 +109,10 @@ function Whiteboard() {
       setMsg({ ...msg, from: socketId });
     });
     socket.on("roomData", (data: IRoom) => {
+      //TODO boardcast join and leave room
       updateGame(data);
     });
-  }, []);
+  }, [updateGame, msg]);
   const [word, setWord] = useState<string>("");
   useEffect(() => {
     if (!game.round) setWord(game.words![0]);
@@ -183,7 +179,7 @@ function Whiteboard() {
               overlap="circle"
               color="primary"
             >
-              <BorderColor id="currentColor" style={{ color }} />
+              <BorderColor className="drawingtoolsIcon" style={{ color }} />
             </Badge>
           </div>
           <div id="colorPalettes">
@@ -198,6 +194,7 @@ function Whiteboard() {
               ))}
             </div>
           </div>
+          <LayersClear className="drawingtoolsIcon" />
         </Container>
         <canvas
           id="canvas"
@@ -216,17 +213,26 @@ function Whiteboard() {
         </div>
         <div id="chatbox">
           <div id="messages">
-            {logs.map((l, i) => (
-              <p key={`log${i}`}>{`${l.from}: ${l.message}`}</p>
-            ))}
+            {logs.map((l, i) =>
+              l.from === "SYSTEM" ? (
+                <p key={`log${i}`} className="systemMsg">{`${l.message}`}</p>
+              ) : (
+                <p
+                  key={`log${i}`}
+                  className="msg"
+                >{`${l.from}: ${l.message}`}</p>
+              )
+            )}
           </div>
           <div id="inputChat">
             <Input
+              id="inputbox"
               placeholder="Enter your message here"
               onChange={handleInput}
               onKeyUp={handleInputMsg}
               inputProps={{ "aria-label": "description" }}
             />
+            <Send />
           </div>
         </div>
       </div>

@@ -41,8 +41,9 @@ export enum difficulty {
   lunatic = "Lunatic",
 }
 
-export interface IError {
-  message: string | null;
+export interface IStatus {
+  error: string | null;
+  loading: boolean;
 }
 
 export interface IRoomChat {
@@ -50,4 +51,12 @@ export interface IRoomChat {
   message: string;
   room?: string;
   round: number;
+}
+
+export enum mode {
+  n = "Normal",
+  b = "Blindfold",
+  c = "Co-op",
+  r = "Relay",
+  s = "solo",
 }

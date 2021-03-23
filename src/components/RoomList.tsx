@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Paper } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
+import axios from "axios";
 import RoomOptions from "./RoomOptions";
 import "../styles/RoomList.scss";
 
@@ -9,6 +10,11 @@ function RoomList() {
   function handleModal() {
     setOpen(!open);
   }
+  const getRoomList = useCallback(async () => {
+    const res = await axios.get(process.env.REACT_APP_API_URL + "/rooms");
+    if (res.status === 200) return res.data;
+  }, []);
+
   return (
     <div id="roomlist-wrapper">
       <h2>Room List</h2>
