@@ -15,9 +15,7 @@ function Home() {
   const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState(false);
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
-    if (reason === "clickaway") {
-      return;
-    }
+    if (reason === "clickaway") return;
     setOpen(false);
     dispatch(updateError(null));
   };

@@ -44,8 +44,13 @@ export enum difficulty {
 export interface IStatus {
   error: string | null;
   loading: boolean;
+  alert: IAlert | null;
 }
 
+export interface IAlert {
+  type: string;
+  message: string;
+}
 export interface IRoomChat {
   from: string;
   message: string;

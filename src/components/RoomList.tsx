@@ -28,12 +28,13 @@ function RoomList() {
       if (res.status === 200) dispatch(initList(res.data));
     } catch (error) {
       console.log(error);
-      dispatch(updateError(error.response.data.message));
+      if (error.respose) dispatch(updateError(error.response.data.message));
+      else dispatch(updateError("Server is downed"));
     }
   }, [dispatch]);
-  const joinRoom = (id: string) => {
-    history.push(`/r/${id}`);
-  };
+
+  const joinRoom = (id: string) => history.push(`/r/${id}`);
+
   useEffect(() => {
     getRoomList();
   }, [getRoomList]);

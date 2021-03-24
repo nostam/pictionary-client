@@ -11,7 +11,7 @@ import {
   Button,
 } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import { useAppSelector, useAppDispatch } from "../utils/hooks";
+import { useAppDispatch } from "../utils/hooks";
 import { difficulties } from "../utils/constants";
 import { updateGame } from "../store/reducers/game";
 
@@ -63,9 +63,10 @@ export default function SimpleModal({ open, handleModal }: IProps) {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const { game } = useAppSelector((state) => state.current);
   // const settings = React.useRef(game);
-  const [settings, setSettings] = React.useState(game);
+  const [settings, setSettings] = React.useState({
+    difficulty: difficulties[0].value,
+  });
   const dispatchGame = React.useCallback((data) => dispatch(updateGame(data)), [
     dispatch,
   ]);
