@@ -12,6 +12,7 @@ import { initList } from "../store/reducers/rooms";
 import { updateError } from "../store/reducers/status";
 
 dayjs.extend(relativeTime);
+const apiURL = process.env.REACT_APP_API_URL!;
 
 function RoomList() {
   const [open, setOpen] = useState(false);
@@ -24,7 +25,7 @@ function RoomList() {
   }
   const getRoomList = useCallback(async () => {
     try {
-      const res = await axios.get(process.env.REACT_APP_API_URL + "/rooms");
+      const res = await axios.get(apiURL + "/rooms");
       if (res.status === 200) dispatch(initList(res.data));
     } catch (error) {
       console.log(error);

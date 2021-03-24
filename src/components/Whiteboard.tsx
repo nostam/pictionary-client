@@ -2,11 +2,12 @@ import React, { useRef, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import io from "socket.io-client";
+import axios from "axios";
 import { Container, Slider, Popover, Badge, Input } from "@material-ui/core";
 import { LayersClear, BorderColor, Send } from "@material-ui/icons";
 import { colors, marks } from "../utils/constants";
 import { IRoom, IRoomChat, ICanvas } from "../utils/interfaces";
-import { updateError } from "../store/reducers/status";
+import { updateError, isLoading } from "../store/reducers/status";
 import { updateGame } from "../store/reducers/game";
 import "../styles/Whiteboard.scss";
 
@@ -14,7 +15,6 @@ const apiURL = process.env.REACT_APP_API_URL!;
 // type Coordinate = { x: number; y: number };
 const socket = io(apiURL, { transports: ["websocket"] });
 let room = "";
-let sid = "";
 
 function valuetext(value: number) {
   return `${value}px`;
@@ -24,7 +24,9 @@ function Whiteboard() {
   const dispatch = useAppDispatch();
   const history = useHistory();
   room = history.location.pathname.slice(3);
+
   const { game } = useAppSelector((state) => state.current);
+  const { loading } = useAppSelector((state) => state.status);
 
   // Drawing
 
@@ -66,6 +68,8 @@ function Whiteboard() {
       img.onload = () => context!.drawImage(img, 0, 0);
     });
   }, []);
+
+  // drawing tools config
   useEffect(() => {
     const context = canvasRef.current!.getContext("2d")!;
     context.strokeStyle = color;
@@ -85,7 +89,7 @@ function Whiteboard() {
     contextRef.current!.closePath();
     setIsDrawing(false);
     const dataURL = canvasRef.current!.toDataURL("image/webp", 0.75); // firefox does not support
-    const msg: ICanvas = { room, dataURL, from: sid };
+    const msg: ICanvas = { room, dataURL, from: socket.id };
     socket.emit("canvasData", msg);
   }
   function draw(e: MouseEvent) {
@@ -100,41 +104,51 @@ function Whiteboard() {
 
   // Game
   const checkRoomId = React.useCallback(async () => {
-    const res = await fetch(`${apiURL}/rooms/${room}`);
-    if (res.status === 404) {
+    try {
+      const res = await axios.get(`${apiURL}/rooms/${room}`);
+      if (res.status === 200) dispatch(updateGame(res.data));
+    } catch (error) {
       dispatch(updateError("Room doesn't exists"));
       history.push("/");
     }
   }, [dispatch, history]);
 
   useEffect(() => {
-    socket.on("connection", (socketId: string) => {
+    socket.emit("connection", (socketId: string) => {
       console.log(socketId);
-      sid = socketId;
-      setMsg({ ...msg, from: socketId });
     });
-    socket.on("roomData", (data: IRoom) => {
-      dispatch(updateGame(data));
-    });
-  }, [dispatch, msg]);
+  }, []);
 
   // emit join room and handle disconnect
   useEffect(() => {
-    if (room) checkRoomId();
-    socket.emit("joinRoom", { room });
+    dispatch(isLoading(true));
+    socket.connect();
+    socket.emit("joinRoom", room);
+    socket.on("roomData", (data: IRoom) => {
+      console.log("update game data", data);
+      dispatch(updateGame(data));
+      if (data.status !== null) {
+        dispatch(isLoading(false));
+      }
+    });
+    // if (room) checkRoomId();
+
     return () => {
+      socket.removeAllListeners();
       socket.emit("leaveRoom", room);
       socket.disconnect();
     };
-  }, [checkRoomId]);
+  }, []);
 
   // Status update
   const updateStatus = (status: string) => {
-    socket.emit("gameStatus", { from: sid, room, status });
+    socket.emit("gameStatus", { from: socket.id, room, status });
   };
 
   // Timer
   const [timer, setTimer] = useState<number>(180);
+  const timerRef = useRef(timer);
+  timerRef.current = timer;
   useEffect(() => setTimer(180), [game.round]);
 
   // Topic
@@ -142,7 +156,7 @@ function Whiteboard() {
   useEffect(() => {
     if (game.status === "started") {
       setWord(game.words![game.round!]);
-      setInterval(() => {
+      setTimeout(() => {
         setTimer(timer - 1);
       }, 1000);
     }
@@ -240,7 +254,7 @@ function Whiteboard() {
       </div>
       <div id="sidebar">
         <div id="timer">
-          {game.status === "waiting" ? (
+          {game.status === "waiting" || undefined ? (
             <>
               <h4>Waiting for others to join</h4>
               <button onClick={() => updateStatus("started")}>
@@ -249,7 +263,7 @@ function Whiteboard() {
             </>
           ) : (
             <>
-              <h4>{game.round}</h4>
+              <h4>{`round: ${game.round}`}</h4>
               <h1>{`${timer}s`}</h1>
             </>
           )}

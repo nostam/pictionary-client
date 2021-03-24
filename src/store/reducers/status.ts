@@ -12,7 +12,10 @@ export const errorSlice = createSlice({
     updateAlert: (state, action) => {
       state.alert = action.payload;
     },
+    isLoading: (state, action) => {
+      state.loading = action.payload;
+    },
   },
 });
-export const { updateError, updateAlert } = errorSlice.actions;
+export const { updateError, updateAlert, isLoading } = errorSlice.actions;
 export default errorSlice.reducer;
