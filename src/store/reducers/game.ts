@@ -8,7 +8,7 @@ interface IProps {
 
 const initialState: IProps = {
   game: {
-    words: ["smile", "star"],
+    words: [],
     difficulty: difficulty.easy,
   },
 };

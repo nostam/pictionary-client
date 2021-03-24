@@ -7,7 +7,7 @@ import { LayersClear, BorderColor, Send } from "@material-ui/icons";
 import { colors, marks } from "../utils/constants";
 import { IRoom, IRoomChat, ICanvas } from "../utils/interfaces";
 import { updateError } from "../store/reducers/status";
-
+import { updateGame } from "../store/reducers/game";
 import "../styles/Whiteboard.scss";
 
 const apiURL = process.env.REACT_APP_API_URL!;
@@ -23,6 +23,7 @@ function valuetext(value: number) {
 function Whiteboard() {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  room = history.location.pathname.slice(3);
   const { game } = useAppSelector((state) => state.current);
 
   // Drawing
@@ -36,7 +37,7 @@ function Whiteboard() {
     from: `demo${Math.floor(Math.random() * 10)}`,
     message: "",
     round: 0,
-    room: "test",
+    room,
   });
   const [color, setColor] = useState<string>("black");
   const [stroke, setStroke] = useState<number>(12);
@@ -98,28 +99,14 @@ function Whiteboard() {
   };
 
   // Game
-  const updateGame = React.useCallback(
-    (data) => dispatch({ type: "updateGame", action: data }),
-    [dispatch]
-  );
-  const checkRoomId = React.useCallback(
-    async (room: string) => {
-      const res = await fetch(`${apiURL}/rooms/${room}`);
-      if (res.status >= 400) {
-        dispatch(updateError("Room doesn't exists"));
-        history.push("/");
-      }
-    },
-    [dispatch, history]
-  );
-  useEffect(() => {
-    room = history.location.pathname.slice(3);
-    checkRoomId(room);
-    socket.emit("joinRoom", { room });
-    return () => {
-      socket.disconnect();
-    };
-  }, [checkRoomId, history.location.pathname]);
+  const checkRoomId = React.useCallback(async () => {
+    const res = await fetch(`${apiURL}/rooms/${room}`);
+    if (res.status === 404) {
+      dispatch(updateError("Room doesn't exists"));
+      history.push("/");
+    }
+  }, [dispatch, history]);
+
   useEffect(() => {
     socket.on("connection", (socketId: string) => {
       console.log(socketId);
@@ -127,15 +114,39 @@ function Whiteboard() {
       setMsg({ ...msg, from: socketId });
     });
     socket.on("roomData", (data: IRoom) => {
-      //TODO boardcast join and leave room
-      updateGame(data);
+      dispatch(updateGame(data));
     });
-  }, [updateGame, msg]);
+  }, [dispatch, msg]);
 
+  // emit join room and handle disconnect
+  useEffect(() => {
+    if (room) checkRoomId();
+    socket.emit("joinRoom", { room });
+    return () => {
+      socket.emit("leaveRoom", room);
+      socket.disconnect();
+    };
+  }, [checkRoomId]);
+
+  // Status update
+  const updateStatus = (status: string) => {
+    socket.emit("gameStatus", { from: sid, room, status });
+  };
+
+  // Timer
+  const [timer, setTimer] = useState<number>(180);
+  useEffect(() => setTimer(180), [game.round]);
+
+  // Topic
   const [word, setWord] = useState<string>("");
   useEffect(() => {
-    if (!game.round) setWord(game.words![0]);
-  }, [game]);
+    if (game.status === "started") {
+      setWord(game.words![game.round!]);
+      setInterval(() => {
+        setTimer(timer - 1);
+      }, 1000);
+    }
+  }, [game, timer]);
 
   // Chat
   useEffect(() => {
@@ -146,6 +157,7 @@ function Whiteboard() {
   const sendMsg = () => {
     setLogs(logs.concat(msg));
     socket.emit("message", msg);
+    setMsg({ ...msg, message: "" });
   };
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMsg({ ...msg, message: e.target.value });
@@ -228,7 +240,19 @@ function Whiteboard() {
       </div>
       <div id="sidebar">
         <div id="timer">
-          <h1>Timer</h1>
+          {game.status === "waiting" ? (
+            <>
+              <h4>Waiting for others to join</h4>
+              <button onClick={() => updateStatus("started")}>
+                Game Start
+              </button>
+            </>
+          ) : (
+            <>
+              <h4>{game.round}</h4>
+              <h1>{`${timer}s`}</h1>
+            </>
+          )}
         </div>
         <div id="chatbox">
           <div id="messages">
