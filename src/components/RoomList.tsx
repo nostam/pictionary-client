@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { Paper } from "@material-ui/core";
 import Add from "@material-ui/icons/Add";
 import axios from "axios";
@@ -8,6 +9,7 @@ import RoomOptions from "./RoomOptions";
 import "../styles/RoomList.scss";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import { initList } from "../store/reducers/rooms";
+import { updateError } from "../store/reducers/status";
 
 dayjs.extend(relativeTime);
 
@@ -15,25 +17,38 @@ function RoomList() {
   const [open, setOpen] = useState(false);
   const { rooms } = useAppSelector((state) => state.rooms);
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
   function handleModal() {
     setOpen(!open);
   }
   const getRoomList = useCallback(async () => {
-    const res = await axios.get(process.env.REACT_APP_API_URL + "/rooms");
-    if (res.status === 200) dispatch(initList(res.data));
-  }, []);
-
+    try {
+      const res = await axios.get(process.env.REACT_APP_API_URL + "/rooms");
+      if (res.status === 200) dispatch(initList(res.data));
+    } catch (error) {
+      console.log(error);
+      dispatch(updateError(error.response.data.message));
+    }
+  }, [dispatch]);
+  const joinRoom = (id: string) => {
+    history.push(`/r/${id}`);
+  };
   useEffect(() => {
     getRoomList();
   }, [getRoomList]);
-  const now = new Date();
+
   return (
     <div id="roomlist-wrapper">
       <h2>Room List</h2>
       <div id="rooms-container">
         {rooms.map((room, i) => (
-          <Paper variant="outlined" className="room" key={`room${i}`}>
+          <Paper
+            variant="outlined"
+            className="room"
+            key={`room${i}`}
+            onClick={() => joinRoom(room._id!)}
+          >
             {/* <span>Members: {room.users!.length}</span> */}
             <span>Difficulty: {room.difficulty}</span>
             <span>{dayjs(room.createdAt).fromNow()}</span>

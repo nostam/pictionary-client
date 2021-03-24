@@ -1,16 +1,20 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import io from "socket.io-client";
 import { Container, Slider, Popover, Badge, Input } from "@material-ui/core";
 import { LayersClear, BorderColor, Send } from "@material-ui/icons";
 import { colors, marks } from "../utils/constants";
-import { IRoom, IRoomChat } from "../utils/interfaces";
+import { IRoom, IRoomChat, ICanvas } from "../utils/interfaces";
+import { updateError } from "../store/reducers/status";
+
 import "../styles/Whiteboard.scss";
 
+const apiURL = process.env.REACT_APP_API_URL!;
 // type Coordinate = { x: number; y: number };
-const socket = io(process.env.REACT_APP_API_URL!, {
-  transports: ["websocket"],
-});
+const socket = io(apiURL, { transports: ["websocket"] });
+let room = "";
+let sid = "";
 
 function valuetext(value: number) {
   return `${value}px`;
@@ -18,6 +22,7 @@ function valuetext(value: number) {
 
 function Whiteboard() {
   const dispatch = useAppDispatch();
+  const history = useHistory();
   const { game } = useAppSelector((state) => state.current);
 
   // Drawing
@@ -54,7 +59,7 @@ function Whiteboard() {
     contextRef.current = context;
 
     //receiver side
-    socket.on("canvasData", (dataURL: string) => {
+    socket.on("canvasData", ({ dataURL }: ICanvas) => {
       const img = new Image();
       img.src = dataURL;
       img.onload = () => context!.drawImage(img, 0, 0);
@@ -79,7 +84,8 @@ function Whiteboard() {
     contextRef.current!.closePath();
     setIsDrawing(false);
     const dataURL = canvasRef.current!.toDataURL("image/webp", 0.75); // firefox does not support
-    setTimeout(() => socket.emit("canvasData", dataURL), 100);
+    const msg: ICanvas = { room, dataURL, from: sid };
+    socket.emit("canvasData", msg);
   }
   function draw(e: MouseEvent) {
     if (!isDrawing) return;
@@ -96,16 +102,28 @@ function Whiteboard() {
     (data) => dispatch({ type: "updateGame", action: data }),
     [dispatch]
   );
+  const checkRoomId = React.useCallback(
+    async (room: string) => {
+      const res = await fetch(`${apiURL}/rooms/${room}`);
+      if (res.status >= 400) {
+        dispatch(updateError("Room doesn't exists"));
+        history.push("/");
+      }
+    },
+    [dispatch, history]
+  );
   useEffect(() => {
-    const room = "test";
+    room = history.location.pathname.slice(3);
+    checkRoomId(room);
     socket.emit("joinRoom", { room });
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [checkRoomId, history.location.pathname]);
   useEffect(() => {
     socket.on("connection", (socketId: string) => {
       console.log(socketId);
+      sid = socketId;
       setMsg({ ...msg, from: socketId });
     });
     socket.on("roomData", (data: IRoom) => {

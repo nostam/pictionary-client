@@ -60,3 +60,9 @@ export enum mode {
   r = "Relay",
   s = "solo",
 }
+
+export interface ICanvas {
+  from: string;
+  dataURL: string;
+  room: string;
+}
