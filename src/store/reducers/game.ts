@@ -14,10 +14,10 @@ const initialState: IProps = {
 };
 
 export const gameSlice = createSlice({
-  name: "rooms",
+  name: "game",
   initialState,
   reducers: {
-    updateGame: (state, action: PayloadAction<IRoom>) => {
+    updateGame: (state, action) => {
       state.game = action.payload;
     },
   },

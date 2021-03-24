@@ -8,7 +8,8 @@ export interface IRooms {
 export interface IRoom {
   _id?: string;
   creator?: string;
-  users?: IUser[]; //TODO
+  // users?: IUser[]; //TODO
+  users?: string[];
   endedAt?: Date;
   startedAt?: Date;
   words: string[] | null;

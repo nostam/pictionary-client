@@ -121,17 +121,12 @@ function Whiteboard() {
 
   // emit join room and handle disconnect
   useEffect(() => {
-    dispatch(isLoading(true));
     socket.connect();
     socket.emit("joinRoom", room);
-    socket.on("roomData", (data: IRoom) => {
-      console.log("update game data", data);
+    socket.on("roomData", (data: unknown) => {
       dispatch(updateGame(data));
-      if (data.status !== null) {
-        dispatch(isLoading(false));
-      }
     });
-    // if (room) checkRoomId();
+    if (room) checkRoomId();
 
     return () => {
       socket.removeAllListeners();
@@ -153,14 +148,16 @@ function Whiteboard() {
 
   // Topic
   const [word, setWord] = useState<string>("");
-  useEffect(() => {
-    if (game.status === "started") {
-      setWord(game.words![game.round!]);
-      setTimeout(() => {
-        setTimer(timer - 1);
-      }, 1000);
-    }
-  }, [game, timer]);
+  // useEffect(() => {
+  //   if (game.status === "started") {
+  //     setWord(game.words![game.round!]);
+  //     setInterval(() => {
+  //       setTimer(timer - 1);
+  //     }, 1000);
+  //     if (timer === 0 && game.round! < game.words!.length)
+  //       dispatch(updateGame({ ...game, round: game.round! + 1 }));
+  //   }
+  // }, [game, timer, dispatch]);
 
   // Chat
   useEffect(() => {
