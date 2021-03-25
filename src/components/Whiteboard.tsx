@@ -26,6 +26,7 @@ function Whiteboard() {
   room = history.location.pathname.slice(3);
 
   const { game } = useAppSelector((state) => state.current);
+  const gameRef = useRef(game);
   const { loading } = useAppSelector((state) => state.status);
 
   // Drawing
@@ -141,23 +142,26 @@ function Whiteboard() {
   };
 
   // Timer
-  const [timer, setTimer] = useState<number>(180);
+  const [timer, setTimer] = useState<number>(5);
   const timerRef = useRef(timer);
   timerRef.current = timer;
-  useEffect(() => setTimer(180), [game.round]);
 
   // Topic
   const [word, setWord] = useState<string>("");
-  // useEffect(() => {
-  //   if (game.status === "started") {
-  //     setWord(game.words![game.round!]);
-  //     setInterval(() => {
-  //       setTimer(timer - 1);
-  //     }, 1000);
-  //     if (timer === 0 && game.round! < game.words!.length)
-  //       dispatch(updateGame({ ...game, round: game.round! + 1 }));
-  //   }
-  // }, [game, timer, dispatch]);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimer(timer - 1);
+    }, 1000);
+    if (game.status === "started") {
+      if (!timer) {
+        // TODO ask server for next word
+        // TODO completed stated and stop everything
+        dispatch(updateGame({ ...game, round: game.round! + 1 }));
+        setTimer(5);
+      }
+    }
+    return () => clearInterval(intervalId);
+  }, [game, timer, dispatch]);
 
   // Chat
   useEffect(() => {
