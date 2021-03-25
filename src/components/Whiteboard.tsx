@@ -149,9 +149,6 @@ function Whiteboard() {
   // Topic
   const [word, setWord] = useState<string>("");
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTimer(timer - 1);
-    }, 1000);
     if (game.status === "started") {
       if (!timer) {
         // TODO ask server for next word
@@ -159,8 +156,11 @@ function Whiteboard() {
         dispatch(updateGame({ ...game, round: game.round! + 1 }));
         setTimer(5);
       }
+      const intervalId = setTimeout(() => {
+        setTimer(timer - 1);
+      }, 1000);
+      return () => clearInterval(intervalId);
     }
-    return () => clearInterval(intervalId);
   }, [game, timer, dispatch]);
 
   // Chat
