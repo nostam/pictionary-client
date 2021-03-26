@@ -79,6 +79,7 @@ function Whiteboard() {
   }, [stroke, color]);
 
   function startDrawing(e: MouseEvent) {
+    if (!isAuthor) return;
     const { offsetX, offsetY } = e;
     contextRef.current!.beginPath();
     contextRef.current!.moveTo(offsetX, offsetY);
