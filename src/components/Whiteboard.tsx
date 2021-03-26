@@ -123,7 +123,7 @@ function Whiteboard() {
   }, []);
 
   useEffect(() => {
-    if (game.status === "started") {
+    if (game.status && game.status === "started") {
       game.draw![game.round!].users!.includes(socket.id)
         ? setIsAuthor(true)
         : setIsAuthor(false);
@@ -149,7 +149,12 @@ function Whiteboard() {
 
   // Status update
   function updateStatus(status = "started") {
-    socket.emit("gameStatus", { from: socket.id, room, status });
+    socket.emit("gameStatus", {
+      from: socket.id,
+      room,
+      status,
+      difficulty: game.difficulty,
+    });
   }
 
   function startNextRound() {
@@ -165,6 +170,7 @@ function Whiteboard() {
   const [word, setWord] = useState<string>("");
   useEffect(() => {
     if (game.status === "started") {
+      setWord(game.words![game.round!]);
       if (!timer) {
         // TODO ask server for next word
         // TODO completed stated and stop everything
@@ -271,9 +277,7 @@ function Whiteboard() {
           onMouseUp={(e) => finishDrawing(e.nativeEvent)}
           onMouseMove={(e) => draw(e.nativeEvent)}
         />
-        <div id="word">
-          <h1>{word}</h1>
-        </div>
+        <div id="word">{isAuthor ? <h1>{word}</h1> : ""}</div>
       </div>
       <div id="sidebar">
         <div id="timer">

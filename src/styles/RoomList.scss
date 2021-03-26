@@ -6,6 +6,8 @@
     flex-direction: row;
   }
   .room {
+    border: 0;
+    border-radius: 50px;
     margin-right: 1rem;
     width: 200px;
     height: 200px;
@@ -13,6 +15,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    &:hover,
+    &:focus {
+      border-radius: 32px;
+      background: #fafafa;
+      box-shadow: 20px 20px 41px #cfcfcf, -20px -20px 41px #ffffff;
+    }
   }
   .icon {
     width: 48px;
