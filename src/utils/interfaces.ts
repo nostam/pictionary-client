@@ -9,9 +9,9 @@ export interface IRoom {
   _id?: string;
   creator?: string;
   // users?: IUser[]; //TODO
-  users?: string[];
+  draw?: IPlayers[];
+  guess?: IPlayers[];
   endedAt?: Date;
-  startedAt?: Date;
   words: string[] | null;
   difficulty: difficulty;
   createdAt?: Date;
@@ -35,6 +35,11 @@ export interface IUser {
   createdAt?: string;
   modifiedAt?: string;
 }
+export interface IPlayers {
+  round: number;
+  users: string[];
+}
+
 export enum difficulty {
   easy = "Easy",
   normal = "Normal",

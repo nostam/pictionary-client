@@ -6,7 +6,7 @@ import axios from "axios";
 import { Container, Slider, Popover, Badge, Input } from "@material-ui/core";
 import { LayersClear, BorderColor, Send } from "@material-ui/icons";
 import { colors, marks } from "../utils/constants";
-import { IRoom, IRoomChat, ICanvas } from "../utils/interfaces";
+import { IRoomChat, ICanvas } from "../utils/interfaces";
 import { updateError, isLoading } from "../store/reducers/status";
 import { updateGame } from "../store/reducers/game";
 import "../styles/Whiteboard.scss";
@@ -45,6 +45,7 @@ function Whiteboard() {
   const [color, setColor] = useState<string>("black");
   const [stroke, setStroke] = useState<number>(12);
   const [showBrush, setShowBrush] = useState<HTMLDivElement | null>(null);
+  const [isAuthor, setIsAuthor] = useState(true);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -120,6 +121,15 @@ function Whiteboard() {
     });
   }, []);
 
+  useEffect(() => {
+    if (game.status === "started") {
+      game.draw![game.round!].users!.includes(socket.id)
+        ? setIsAuthor(true)
+        : setIsAuthor(false);
+    } else {
+      setIsAuthor(true);
+    }
+  }, [game, isAuthor]);
   // emit join room and handle disconnect
   useEffect(() => {
     socket.connect();
@@ -137,9 +147,13 @@ function Whiteboard() {
   }, []);
 
   // Status update
-  const updateStatus = (status: string) => {
+  function updateStatus(status = "started") {
     socket.emit("gameStatus", { from: socket.id, room, status });
-  };
+  }
+
+  function startNextRound() {
+    socket.emit("nextRound", {});
+  }
 
   // Timer
   const [timer, setTimer] = useState<number>(5);
@@ -169,22 +183,29 @@ function Whiteboard() {
       setLogs(logs.concat(data));
     });
   }, [logs]);
-  const sendMsg = () => {
+
+  function sendMsg() {
     setLogs(logs.concat(msg));
     socket.emit("message", msg);
-    setMsg({ ...msg, message: "" });
-  };
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  }
+  function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
     setMsg({ ...msg, message: e.target.value });
-  };
-  const handleInputMsg = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  }
+  function handleInputMsg(e: React.KeyboardEvent<HTMLInputElement>) {
     e.preventDefault();
-    if (e.key === "Enter") sendMsg();
-  };
+    if (e.key === "Enter") {
+      sendMsg();
+      setMsg({ ...msg, message: "" });
+    }
+  }
+
   return (
     <>
       <div id="whiteboard">
-        <Container id="drawingTools">
+        <Container
+          id="drawingTools"
+          style={{ visibility: isAuthor ? "visible" : "hidden" }}
+        >
           <Popover
             open={Boolean(showBrush)}
             anchorEl={showBrush}
@@ -258,9 +279,7 @@ function Whiteboard() {
           {game.status === "waiting" || undefined ? (
             <>
               <h4>Waiting for others to join</h4>
-              <button onClick={() => updateStatus("started")}>
-                Game Start
-              </button>
+              <button onClick={() => updateStatus()}>Game Start</button>
             </>
           ) : (
             <>
@@ -285,6 +304,7 @@ function Whiteboard() {
           <div id="inputChat">
             <Input
               id="inputbox"
+              value={msg.message}
               placeholder="Enter your message here"
               onChange={handleInput}
               onKeyUp={handleInputMsg}
