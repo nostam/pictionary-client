@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import io from "socket.io-client";
@@ -104,9 +104,8 @@ function Whiteboard() {
   const handleClickPen = (e: React.MouseEvent<HTMLDivElement>) => {
     setShowBrush(e.currentTarget);
   };
-
-  // Game
-  const checkRoomId = React.useCallback(async () => {
+  // Callbacks
+  const checkRoomId = useCallback(async () => {
     try {
       const res = await axios.get(`${apiURL}/rooms/${room}`);
       if (res.status === 200) dispatch(updateGame(res.data));
@@ -116,6 +115,10 @@ function Whiteboard() {
     }
   }, [dispatch, history]);
 
+  const isGameCompleted = useCallback(() => {
+    return game.round! === game.words!.length;
+  }, [game]);
+
   useEffect(() => {
     socket.emit("connection", (socketId: string) => {
       console.log(socketId);
@@ -123,14 +126,18 @@ function Whiteboard() {
   }, []);
 
   useEffect(() => {
-    if (game.status && game.status === "started") {
+    if (
+      game.status &&
+      game.status === "started" &&
+      game.round! <= game.words!.length
+    ) {
       game.draw![game.round!].users!.includes(socket.id)
         ? setIsAuthor(true)
         : setIsAuthor(false);
     } else {
       setIsAuthor(true);
     }
-  }, [game, isAuthor]);
+  }, [game, isAuthor, isGameCompleted]);
   // emit join room and handle disconnect
   useEffect(() => {
     socket.connect();
@@ -157,9 +164,26 @@ function Whiteboard() {
     });
   }
 
-  function startNextRound() {
-    socket.emit("nextRound", {});
-  }
+  const gameIsCompleted = useCallback(async () => {
+    if (isGameCompleted()) {
+      dispatch(updateGame({ ...game, status: "ended" }));
+      socket.emit("gameStatus", {
+        from: socket.id,
+        room,
+        status: game.status,
+        difficulty: game.difficulty,
+      });
+    }
+  }, [game, dispatch, isGameCompleted]);
+
+  const startNextRound = useCallback(async () => {
+    // if it it's not the last word
+    console.log(isGameCompleted());
+    if (isGameCompleted()) {
+      setWord(game.words![game.round!]);
+      socket.emit("nextRound", { room, round: game.round! });
+    } else gameIsCompleted();
+  }, [game, isGameCompleted, gameIsCompleted]);
 
   // Timer
   const [timer, setTimer] = useState<number>(5);
@@ -170,26 +194,29 @@ function Whiteboard() {
   const [word, setWord] = useState<string>("");
   useEffect(() => {
     if (game.status === "started") {
-      setWord(game.words![game.round!]);
-      if (!timer) {
-        // TODO ask server for next word
-        // TODO completed stated and stop everything
+      if (!timer && game.words![game.round! + 1] !== undefined) {
         dispatch(updateGame({ ...game, round: game.round! + 1 }));
+        // TODO ask server for next word
+        startNextRound();
+        // TODO add buffer
         setTimer(5);
       }
-      const intervalId = setTimeout(() => {
+      const intervalId = setInterval(() => {
         setTimer(timer - 1);
       }, 1000);
       return () => clearInterval(intervalId);
     }
-  }, [game, timer, dispatch]);
+  }, [game, timer, dispatch, startNextRound]);
 
   // Chat
   useEffect(() => {
     socket.on("message", (data: IRoomChat) => {
+      if (data.from === "system" && data.message.split(" ")[0] === "Correct") {
+        startNextRound();
+      }
       setLogs(logs.concat(data));
     });
-  }, [logs]);
+  }, [logs, startNextRound]);
 
   function sendMsg() {
     setLogs(logs.concat(msg));
