@@ -201,10 +201,10 @@ function Whiteboard() {
         // TODO add buffer
         setTimer(5);
       }
-      const intervalId = setInterval(() => {
-        setTimer(timer - 1);
+      const intervalId = setTimeout(() => {
+        if (timer > 0) setTimer(timer - 1);
       }, 1000);
-      return () => clearInterval(intervalId);
+      return () => clearTimeout(intervalId);
     }
   }, [game, timer, dispatch, startNextRound]);
 
@@ -315,7 +315,7 @@ function Whiteboard() {
             </>
           ) : (
             <>
-              <h4>{`round: ${game.round}`}</h4>
+              <h4>{`round: ${game.round + 1}`}</h4>
               <h1>{`${timer}s`}</h1>
             </>
           )}
