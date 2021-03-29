@@ -20,12 +20,12 @@ export interface IRoom {
   round?: number;
 }
 export interface IUser {
-  _id: string;
+  _id?: string;
   nickname?: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-  email: string;
+  firstName?: string;
+  lastName?: string;
+  password?: string;
+  email?: string;
   avatar?: string;
   status?: string;
   desciption?: string;

@@ -14,7 +14,7 @@ import {
 import { LayersClear, BorderColor, Send } from "@material-ui/icons";
 import { colors, marks } from "../utils/constants";
 import { IRoomChat, ICanvas } from "../utils/interfaces";
-import { updateError, isLoading } from "../store/reducers/status";
+import { updateError } from "../store/reducers/status";
 import { updateGame } from "../store/reducers/game";
 import "../styles/Whiteboard.scss";
 
@@ -33,8 +33,8 @@ function Whiteboard() {
   room = history.location.pathname.slice(3);
 
   const { game } = useAppSelector((state) => state.current);
-  const gameRef = useRef(game);
-  const { loading } = useAppSelector((state) => state.status);
+  // const gameRef = useRef(game);
+  // const { loading } = useAppSelector((state) => state.status);
 
   // Drawing
 
@@ -159,7 +159,7 @@ function Whiteboard() {
       socket.emit("leaveRoom", room);
       socket.disconnect();
     };
-  }, []);
+  }, [checkRoomId, dispatch]);
 
   // Status update
   function updateStatus(status = "started") {
