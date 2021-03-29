@@ -3,7 +3,14 @@ import { useHistory } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import io from "socket.io-client";
 import axios from "axios";
-import { Container, Slider, Popover, Badge, Input } from "@material-ui/core";
+import {
+  Container,
+  Slider,
+  Popover,
+  Badge,
+  Input,
+  Button,
+} from "@material-ui/core";
 import { LayersClear, BorderColor, Send } from "@material-ui/icons";
 import { colors, marks } from "../utils/constants";
 import { IRoomChat, ICanvas } from "../utils/interfaces";
@@ -307,17 +314,24 @@ function Whiteboard() {
         <div id="word">{isAuthor ? <h1>{word}</h1> : ""}</div>
       </div>
       <div id="sidebar">
-        <div id="timer">
+        <div id="status">
           {game.status === "waiting" || undefined ? (
             <>
               <h4>Waiting for others to join</h4>
-              <button onClick={() => updateStatus()}>Game Start</button>
+              <Button
+                variant="contained"
+                color="secondary"
+                disableElevation
+                onClick={() => updateStatus()}
+              >
+                Game Start
+              </Button>
             </>
           ) : (
-            <>
-              <h4>{`round: ${game.round + 1}`}</h4>
+            <div id="timer">
+              <h4>{`round: ${game.round! + 1}`}</h4>
               <h1>{`${timer}s`}</h1>
-            </>
+            </div>
           )}
         </div>
         <div id="chatbox">
