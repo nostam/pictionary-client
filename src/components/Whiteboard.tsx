@@ -36,6 +36,14 @@ function Whiteboard() {
   // const gameRef = useRef(game);
   // const { loading } = useAppSelector((state) => state.status);
 
+  // Timer
+  const [timer, setTimer] = useState<number>(5);
+  const timerRef = useRef(timer);
+  timerRef.current = timer;
+
+  // Topic
+  const [word, setWord] = useState<string>("");
+
   // Drawing
 
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
@@ -111,6 +119,7 @@ function Whiteboard() {
   const handleClickPen = (e: React.MouseEvent<HTMLDivElement>) => {
     setShowBrush(e.currentTarget);
   };
+
   // Callbacks
   const checkRoomId = useCallback(async () => {
     try {
@@ -192,13 +201,6 @@ function Whiteboard() {
     } else gameIsCompleted();
   }, [game, isGameCompleted, gameIsCompleted]);
 
-  // Timer
-  const [timer, setTimer] = useState<number>(5);
-  const timerRef = useRef(timer);
-  timerRef.current = timer;
-
-  // Topic
-  const [word, setWord] = useState<string>("");
   useEffect(() => {
     if (game.status === "started") {
       if (!timer && game.words![game.round! + 1] !== undefined) {
@@ -311,7 +313,15 @@ function Whiteboard() {
           onMouseUp={(e) => finishDrawing(e.nativeEvent)}
           onMouseMove={(e) => draw(e.nativeEvent)}
         />
-        <div id="word">{isAuthor ? <h1>{word}</h1> : ""}</div>
+        <div
+          id="word"
+          style={{
+            visibility:
+              isAuthor && game.status === "started" ? "visible" : "hidden",
+          }}
+        >
+          <h1>Draw: {word}</h1>
+        </div>
       </div>
       <div id="sidebar">
         <div id="status">
