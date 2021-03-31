@@ -235,7 +235,6 @@ function Whiteboard() {
 
   function sendMsg() {
     setLogs(logs.concat(msg));
-    console.log("sending msg", msg);
     socket.emit("message", msg);
     setMsg({ ...msg, message: "" });
   }
