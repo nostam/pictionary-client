@@ -215,10 +215,10 @@ function Whiteboard() {
       if (timer && !isGameCompleted()) {
         const intervalId = setTimeout(() => {
           setTimer(timer - 1);
-          if (timer === 0) return setInitNextRound(true);
         }, 1000);
         return () => clearTimeout(intervalId);
       }
+      if (timer === 0) setInitNextRound(true);
     }
   }, [game, timer, startNextRound, isGameCompleted]);
 
