@@ -87,6 +87,10 @@ function Whiteboard() {
     socket.on("newCanvas", () => {
       contextRef.current!.clearRect(0, 0, width, height);
     });
+    return () => {
+      socket.off("canvasData");
+      socket.off("newCanvas");
+    };
   }, []);
 
   // drawing tools config
@@ -194,7 +198,7 @@ function Whiteboard() {
     }
   }, [game, isAuthor, isGameCompleted]);
 
-  const gameIsCompleted = useCallback(async () => {
+  const gameIsCompleted = useCallback(() => {
     dispatch(updateGame({ status: "ended" }));
     updateStatus("ended");
   }, [dispatch, updateStatus]);
@@ -223,7 +227,10 @@ function Whiteboard() {
   }, [game, timer, startNextRound, isGameCompleted]);
 
   useEffect(() => {
-    if (initNextRound) startNextRound();
+    if (initNextRound) {
+      console.log("logger");
+      startNextRound();
+    }
   }, [initNextRound, startNextRound]);
 
   // Chat
@@ -231,6 +238,9 @@ function Whiteboard() {
     socket.on("message", (data: IRoomChat) => {
       setLogs(logs.concat(data));
     });
+    return () => {
+      socket.off("message");
+    };
   }, [logs, startNextRound]);
 
   function sendMsg() {
