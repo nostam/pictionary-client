@@ -345,6 +345,8 @@ function Whiteboard() {
                 Game Start
               </Button>
             </>
+          ) : game.status === "ended" ? (
+            <h2>Game Clear! 🎉</h2>
           ) : (
             <div id="timer">
               <h4>{`round: ${game.round! + 1}`}</h4>
