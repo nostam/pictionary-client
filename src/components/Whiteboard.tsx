@@ -200,7 +200,6 @@ function Whiteboard() {
   }, [dispatch, updateStatus]);
 
   const startNextRound = useCallback(() => {
-    console.log("startnextround bug");
     setMsg({ ...msg, round: game.round! + 1 });
     dispatch(updateGame({ round: game.round! + 1 }));
     socket.emit("nextRound", { room, round: game.round! });
