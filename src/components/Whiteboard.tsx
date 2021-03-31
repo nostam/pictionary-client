@@ -37,7 +37,7 @@ function Whiteboard() {
   // const { loading } = useAppSelector((state) => state.status);
 
   // Timer
-  const [timer, setTimer] = useState<number>(10);
+  const [timer, setTimer] = useState<number>(180);
   const timerRef = useRef(timer);
   timerRef.current = timer;
 
@@ -206,7 +206,7 @@ function Whiteboard() {
     socket.emit("nextRound", { room, round: game.round! });
     setWord(game.words![game.round!]);
     setInitNextRound(false);
-    setTimer(10);
+    setTimer(180);
     if (game.status === "started" && isGameCompleted()) gameIsCompleted();
   }, [game, dispatch, msg, isGameCompleted, gameIsCompleted]);
 
