@@ -43,7 +43,7 @@ function Whiteboard() {
 
   // Topic
   const [word, setWord] = useState<string>("");
-
+  const [initNextRound, setInitNextRound] = useState<boolean>(false);
   // Drawing
 
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
@@ -85,7 +85,7 @@ function Whiteboard() {
       img.onload = () => context!.drawImage(img, 0, 0);
     });
     socket.on("newCanvas", () => {
-      context.clearRect(0, 0, width, height);
+      contextRef.current!.clearRect(0, 0, width, height);
     });
   }, []);
 
@@ -134,25 +134,42 @@ function Whiteboard() {
     }
   }, [dispatch, history]);
 
+  // Status update
+  const updateStatus = useCallback(
+    (status = "started") => {
+      socket.emit("");
+      socket.emit("gameStatus", {
+        from: socket.id,
+        room,
+        status,
+        difficulty: game.difficulty,
+      });
+    },
+    [game.difficulty]
+  );
+
   // emit join room and handle disconnect
   useEffect(() => {
-    // socket.connect();
+    socket.connect();
     socket.emit("joinRoom", room);
     socket.on("roomData", (data: unknown) => {
-      console.log("updateroom", data);
       dispatch(updateGame(data));
+    });
+    socket.on("nextRound", () => {
+      setInitNextRound(true);
     });
     if (room) checkRoomId();
 
     return () => {
-      socket.removeAllListeners();
       socket.emit("leaveRoom", room);
+      socket.removeAllListeners();
       socket.disconnect();
     };
   }, [checkRoomId, dispatch]);
 
   const isGameCompleted = useCallback(() => {
-    if (game.words![game.round! + 1] === undefined) return true;
+    if (game.status !== "waiting" && game.words![game.round! + 1] === undefined)
+      return true;
     else return false;
   }, [game]);
 
@@ -177,60 +194,43 @@ function Whiteboard() {
     }
   }, [game, isAuthor, isGameCompleted]);
 
-  // Status update
-  function updateStatus(status = "started") {
-    socket.emit("gameStatus", {
-      from: socket.id,
-      room,
-      status,
-      difficulty: game.difficulty,
-    });
-  }
-
   const gameIsCompleted = useCallback(async () => {
     dispatch(updateGame({ status: "ended" }));
-    socket.emit("gameStatus", {
-      from: socket.id,
-      room,
-      status: game.status,
-      difficulty: game.difficulty,
-    });
-  }, [game, dispatch]);
+    updateStatus("ended");
+  }, [dispatch, updateStatus]);
 
-  const startNextRound = useCallback(async () => {
-    // if it it's not the last word
-    if (!isGameCompleted()) {
-      dispatch(updateGame({ round: game.round! + 1 }));
-      console.log(game);
-      socket.emit("nextRound", { room, round: game.round! });
-      setWord(game.words![game.round!]);
-      setTimer(10);
-      console.log(game.round, game.words, word);
-    }
-    console.log(isGameCompleted(), game.round, word);
-  }, [game, isGameCompleted, word, dispatch]);
+  const startNextRound = useCallback(() => {
+    console.log("startnextround bug");
+    setMsg({ ...msg, round: game.round! + 1 });
+    dispatch(updateGame({ round: game.round! + 1 }));
+    socket.emit("nextRound", { room, round: game.round! });
+    setWord(game.words![game.round!]);
+    setInitNextRound(false);
+    setTimer(10);
+    if (game.status === "started" && isGameCompleted()) gameIsCompleted();
+  }, [game, dispatch, msg, isGameCompleted, gameIsCompleted]);
 
   useEffect(() => {
     if (game.status === "started") {
       setWord(game.words![game.round!]);
-      if (!timer && game.words![game.round! + 1] !== undefined) {
-        // TODO ask server for next word
-        startNextRound();
+      if (timer && !isGameCompleted()) {
+        const intervalId = setTimeout(() => {
+          setTimer(timer - 1);
+          if (timer === 0) return setInitNextRound(true);
+        }, 1000);
+        return () => clearTimeout(intervalId);
       }
-      const intervalId = setTimeout(() => {
-        if (timer > 0) setTimer(timer - 1);
-      }, 1000);
-      return () => clearTimeout(intervalId);
     }
-  }, [game, timer, startNextRound, gameIsCompleted]);
+  }, [game, timer, startNextRound, isGameCompleted]);
+
+  useEffect(() => {
+    if (initNextRound) startNextRound();
+  }, [initNextRound, startNextRound]);
 
   // Chat
   useEffect(() => {
     socket.on("message", (data: IRoomChat) => {
       setLogs(logs.concat(data));
-      if (data.from === "SYSTEM" && data.message.split(" ")[0] === "Correct") {
-        startNextRound();
-      }
     });
   }, [logs, startNextRound]);
 
@@ -238,6 +238,7 @@ function Whiteboard() {
     setLogs(logs.concat(msg));
     console.log("sending msg", msg);
     socket.emit("message", msg);
+    setMsg({ ...msg, message: "" });
   }
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
     setMsg({ ...msg, message: e.target.value });
@@ -246,7 +247,6 @@ function Whiteboard() {
     e.preventDefault();
     if (e.key === "Enter") {
       sendMsg();
-      setMsg({ ...msg, message: "" });
     }
   }
 

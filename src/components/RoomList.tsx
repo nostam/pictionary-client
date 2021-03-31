@@ -30,7 +30,7 @@ function RoomList() {
     } catch (error) {
       console.log(error);
       if (error.respose) dispatch(updateError(error.response.data.message));
-      else dispatch(updateError("Server is downed"));
+      else dispatch(updateError("Server is downed, please try again later."));
     }
   }, [dispatch]);
 
