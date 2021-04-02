@@ -1,9 +1,10 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import { Provider } from "react-redux";
-
 import store from "./store";
 import NavBar from "./components/NavBar";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Room from "./pages/Room";
 import Home from "./pages/Home";
 
@@ -13,6 +14,8 @@ function App() {
       <BrowserRouter>
         <Route path="/" component={NavBar} />
         <Route path="/r/:id" component={Room} />
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
         <Route path="/" exact component={Home} />
       </BrowserRouter>
     </Provider>

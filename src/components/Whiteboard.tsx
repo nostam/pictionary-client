@@ -287,7 +287,7 @@ function Whiteboard() {
                 valueLabelDisplay="off"
                 marks={marks}
                 min={4}
-                max={96}
+                max={256}
                 orientation="vertical"
                 onChange={(e, value) => {
                   if (typeof value === "number") setStroke(value);
