@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import Logo from "../logo.svg";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -54,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Register() {
   const classes = useStyles();
+  const history = useHistory();
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const timer = React.useRef<number>();
@@ -75,6 +77,10 @@ export default function Register() {
       clearTimeout(timer.current);
     };
   }, []);
+
+  React.useEffect(() => {
+    if (success) history.push("/login");
+  }, [success, history]);
 
   return (
     <Container component="main" maxWidth="xs">

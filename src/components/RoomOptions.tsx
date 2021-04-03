@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { useAppDispatch } from "../utils/hooks";
-import { difficulties } from "../utils/constants";
+import { difficulties, gamemode, apiURL } from "../utils/constants";
 import { updateGame } from "../store/reducers/game";
 
 function getModalStyle() {
@@ -63,38 +63,32 @@ export default function SimpleModal({ open, handleModal }: IProps) {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  // const settings = React.useRef(game);
   const [settings, setSettings] = React.useState({
     difficulty: difficulties[0].value,
+    mode: gamemode[0].value,
   });
-  const dispatchGame = React.useCallback((data) => dispatch(updateGame(data)), [
+  const dispatchGame = useCallback((data) => dispatch(updateGame(data)), [
     dispatch,
   ]);
   // strict mode warning with material ui styling, will be fixed in @5
   const classes = useStyles();
-  const [modalStyle] = React.useState(getModalStyle);
+  const [modalStyle] = useState(getModalStyle);
 
   const handleChange = (
     event: React.ChangeEvent<{ value: unknown; name?: string }>
   ) => {
     const { name, value } = event.target;
-
-    // if (name) settings.current = { ...settings.current, [name]: value };
     if (name) setSettings({ ...settings, [name]: value });
   };
 
-  const createNewGame = async () => {
+  const createNewGame = useCallback(async () => {
     try {
-      const { data } = await axios({
-        method: "post",
-        url: process.env.REACT_APP_API_URL + "/rooms/create",
-        data: settings,
-      });
+      const { data } = await axios.post(apiURL + "/rooms/create", settings);
       return data;
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [settings]);
   const handleButtonClick = async (event: React.MouseEvent) => {
     const data = await createNewGame();
     if (data) {
@@ -102,6 +96,7 @@ export default function SimpleModal({ open, handleModal }: IProps) {
       history.push(`/r/${data._id}`);
     }
   };
+
   const body = (
     <div style={modalStyle} className={classes.paper}>
       <h2 id="simple-modal-title">Create a new game</h2>
@@ -130,16 +125,24 @@ export default function SimpleModal({ open, handleModal }: IProps) {
             ))}
           </Select>
         </FormControl>
-        {/* <FormControl variant="outlined" className={classes.formControl}>
+        <FormControl variant="outlined" className={classes.formControl}>
           <InputLabel id="demo-simple-select-outlined-label">Mode</InputLabel>
           <Select
             labelId="demo-simple-select-outlined-label"
             id="demo-simple-select-outlined"
-            value={mode}
+            value={settings.mode}
             onChange={handleChange}
-            label="Difficulty"
-          ></Select>
-        </FormControl> */}
+            name="mode"
+            label="Game Mode"
+          >
+            {gamemode.toString()}
+            {gamemode.map((mode, i) => (
+              <MenuItem key={`mode${i}`} value={mode.value}>
+                {mode.value}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </div>
       <Button
         variant="contained"

@@ -12,13 +12,12 @@ import {
   Button,
 } from "@material-ui/core";
 import { LayersClear, BorderColor, Send } from "@material-ui/icons";
-import { colors, marks } from "../utils/constants";
+import { colors, marks, apiURL } from "../utils/constants";
 import { IRoomChat, ICanvas } from "../utils/interfaces";
 import { updateError } from "../store/reducers/status";
 import { updateGame } from "../store/reducers/game";
 import "../styles/Whiteboard.scss";
 
-const apiURL = process.env.REACT_APP_API_URL!;
 // type Coordinate = { x: number; y: number };
 const socket = io(apiURL, { transports: ["websocket"] });
 let room = "";

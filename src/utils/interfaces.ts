@@ -8,7 +8,7 @@ export interface IRooms {
 export interface IRoom {
   _id?: string;
   creator?: string;
-  // users?: IUser[]; //TODO
+  users?: IUser[];
   draw?: IPlayers[];
   guess?: IPlayers[];
   endedAt?: Date;
@@ -65,11 +65,11 @@ export interface IRoomChat {
 }
 
 export enum mode {
-  n = "Normal",
-  b = "Blindfold",
-  c = "Co-op",
-  r = "Relay",
-  s = "solo",
+  normal = "Normal",
+  blindfold = "Blindfold",
+  coop = "Co-op",
+  relay = "Relay",
+  solo = "solo",
 }
 
 export interface ICanvas {

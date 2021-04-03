@@ -10,9 +10,8 @@ import "../styles/RoomList.scss";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import { initList } from "../store/reducers/rooms";
 import { updateError } from "../store/reducers/status";
-
+import { apiURL } from "../utils/constants";
 dayjs.extend(relativeTime);
-const apiURL = process.env.REACT_APP_API_URL!;
 
 function RoomList() {
   const [open, setOpen] = useState(false);
@@ -37,7 +36,10 @@ function RoomList() {
   const joinRoom = (id: string) => history.push(`/r/${id}`);
 
   useEffect(() => {
-    getRoomList();
+    const updateRoomList = setInterval(() => {
+      getRoomList();
+    }, 10000);
+    return () => clearInterval(updateRoomList);
   }, [getRoomList]);
 
   return (
@@ -51,7 +53,7 @@ function RoomList() {
             key={`room${i}`}
             onClick={() => joinRoom(room._id!)}
           >
-            {/* <span>Members: {room.users!.length}</span> */}
+            <span>Members: {room.users!.length}</span>
             <span>Difficulty: {room.difficulty}</span>
             <span>{dayjs(room.createdAt).fromNow()}</span>
           </Paper>

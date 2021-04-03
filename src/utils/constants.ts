@@ -1,5 +1,7 @@
-import { IColor, difficulty } from "./interfaces";
+import { IColor, difficulty, mode } from "./interfaces";
 import { green, blue, purple, red } from "@material-ui/core/colors";
+
+export const apiURL = process.env.REACT_APP_API_URL!;
 
 export const colors: IColor[] = [
   { value: "#f44336", label: "Red" },
@@ -46,4 +48,12 @@ export const difficulties = [
   { value: difficulty.normal, color: blue[900] },
   { value: difficulty.hard, color: purple[900] },
   { value: difficulty.lunatic, color: red[900] },
+];
+
+export const gamemode = [
+  { value: mode.normal },
+  { value: mode.relay },
+  { value: mode.coop },
+  { value: mode.blindfold },
+  { value: mode.solo },
 ];
