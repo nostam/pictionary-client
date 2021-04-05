@@ -1,23 +1,20 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Logo from "../logo.svg";
-
 import { makeStyles } from "@material-ui/core/styles";
-
 import {
   Container,
   Avatar,
   Button,
   CssBaseline,
   TextField,
-  FormControlLabel,
-  Checkbox,
   Grid,
   Link,
   Typography,
   CircularProgress,
   colors,
 } from "@material-ui/core";
+import { fetchBe } from "../utils/fetch";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -56,29 +53,39 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const classes = useStyles();
   const history = useHistory();
-  const [loading, setLoading] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
-  const timer = React.useRef<number>();
+  const [input, setInput] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const timer = useRef<number>();
 
-  const handleButtonClick = (e: React.SyntheticEvent<HTMLFormElement>) => {
+  function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
+    setInput({ ...input, [e.target.name]: e.target.value });
+    console.log(input);
+  }
+  const handleButtonClick = async (
+    e: React.SyntheticEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
     if (!loading) {
       setSuccess(false);
       setLoading(true);
-      timer.current = window.setTimeout(() => {
-        setSuccess(true);
-        setLoading(false);
-      }, 2000);
+      const res = await fetchBe.post("/users/login", input);
+      if (res.status === 200) {
+        timer.current = window.setTimeout(() => {
+          setSuccess(true);
+          setLoading(false);
+        }, 1000);
+      }
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       clearTimeout(timer.current);
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (success) history.push("/");
   }, [success, history]);
 
@@ -101,6 +108,7 @@ export default function Login() {
             name="username"
             autoComplete="username"
             autoFocus
+            onChange={handleInput}
           />
           <TextField
             variant="outlined"
@@ -111,12 +119,12 @@ export default function Login() {
             label="Password"
             type="password"
             id="password"
-            autoComplete="current-password"
+            onChange={handleInput}
           />
-          <FormControlLabel
+          {/* <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          />
+          /> */}
           <div className={classes.wrapper}>
             <Button
               type="submit"

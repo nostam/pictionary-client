@@ -32,6 +32,7 @@ function Whiteboard() {
   room = history.location.pathname.slice(3);
 
   const { game } = useAppSelector((state) => state.current);
+  const { user } = useAppSelector((state) => state.user);
   // const gameRef = useRef(game);
   // const { loading } = useAppSelector((state) => state.status);
 
@@ -154,7 +155,7 @@ function Whiteboard() {
   // emit join room and handle disconnect
   useEffect(() => {
     socket.connect();
-    socket.emit("joinRoom", room);
+    socket.emit("joinRoom", { room, user });
     socket.on("roomData", (data: unknown) => {
       dispatch(updateGame(data));
     });
@@ -168,7 +169,7 @@ function Whiteboard() {
       socket.removeAllListeners();
       socket.disconnect();
     };
-  }, [checkRoomId, dispatch]);
+  }, [checkRoomId, dispatch, user]);
 
   const isGameCompleted = useCallback(() => {
     if (game.status !== "waiting" && game.words![game.round! + 1] === undefined)
