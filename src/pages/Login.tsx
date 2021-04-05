@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import Logo from "../logo.svg";
 import { makeStyles } from "@material-ui/core/styles";
@@ -12,9 +12,11 @@ import {
   Link,
   Typography,
   CircularProgress,
-  colors,
 } from "@material-ui/core";
+import { colors } from "../utils/constants";
 import { fetchBe } from "../utils/fetch";
+import { IAlert, Severity } from "../utils/interfaces";
+import Snackbars from "../components/Snackbars";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -41,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
   },
   buttonProgress: {
-    color: colors.green[500],
+    color: colors[10].value,
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -56,26 +58,44 @@ export default function Login() {
   const [input, setInput] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [alert, setAlert] = useState<IAlert | undefined>();
+  const [openAlert, setOpenAlert] = useState(false);
   const timer = useRef<number>();
 
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
     setInput({ ...input, [e.target.name]: e.target.value });
-    console.log(input);
   }
+
+  const handleAlert = useCallback((type: Severity, message: string) => {
+    setAlert({ type, message });
+    setOpenAlert(true);
+  }, []);
+
+  const clearAlert = useCallback(() => {
+    setOpenAlert(false);
+    setAlert(undefined);
+  }, []);
+
   const handleButtonClick = async (
     e: React.SyntheticEvent<HTMLFormElement>
   ) => {
-    e.preventDefault();
-    if (!loading) {
-      setSuccess(false);
-      setLoading(true);
-      const res = await fetchBe.post("/users/login", input);
-      if (res.status === 200) {
-        timer.current = window.setTimeout(() => {
-          setSuccess(true);
-          setLoading(false);
-        }, 1000);
+    try {
+      e.preventDefault();
+      if (!loading) {
+        clearAlert();
+        setSuccess(false);
+        setLoading(true);
+        const res = await fetchBe.post("/users/login", input);
+        if (res.status === 200) {
+          timer.current = window.setTimeout(() => {
+            setSuccess(true);
+            setLoading(false);
+          }, 1000);
+        }
       }
+    } catch (error) {
+      setLoading(false);
+      handleAlert("error", error.response.data.error);
     }
   };
 
@@ -155,6 +175,13 @@ export default function Login() {
           </Grid>
         </form>
       </div>
+      {openAlert && (
+        <Snackbars
+          severity={alert!.type}
+          content={alert!.message}
+          isOpen={openAlert}
+        />
+      )}
     </Container>
   );
 }

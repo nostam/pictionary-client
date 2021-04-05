@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IStatus } from "../../utils/interfaces";
-const initialState: IStatus = { error: null, loading: false, alert: null };
+const initialState: IStatus = {
+  error: undefined,
+  loading: false,
+  alert: undefined,
+};
 
 export const errorSlice = createSlice({
   name: "status",

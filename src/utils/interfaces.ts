@@ -48,13 +48,14 @@ export enum difficulty {
 }
 
 export interface IStatus {
-  error: string | null;
+  error: string | undefined;
   loading: boolean;
-  alert: IAlert | null;
+  alert: IAlert | undefined;
 }
 
+export type Severity = "error" | "success" | "warning" | "info";
 export interface IAlert {
-  type: string;
+  type: Severity;
   message: string;
 }
 export interface IRoomChat {

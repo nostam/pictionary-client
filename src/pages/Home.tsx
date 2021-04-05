@@ -1,24 +1,15 @@
 import React from "react";
-import { Container, Snackbar } from "@material-ui/core";
-import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
-import { useAppSelector, useAppDispatch } from "../utils/hooks";
-import { updateError } from "../store/reducers/status";
+import Container from "@material-ui/core/Container";
+import { useAppSelector } from "../utils/hooks";
 import RoomList from "../components/RoomList";
+import Snackbars from "../components/Snackbars";
 import "../styles/Home.scss";
-
-function Alert(props: AlertProps) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 function Home() {
   const { error } = useAppSelector((state) => state.status);
-  const dispatch = useAppDispatch();
+
   const [open, setOpen] = React.useState(false);
-  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
-    if (reason === "clickaway") return;
-    setOpen(false);
-    dispatch(updateError(null));
-  };
+
   React.useEffect(() => {
     if (error) setOpen(true);
   }, [error]);
@@ -26,11 +17,7 @@ function Home() {
     <div id="home">
       <Container maxWidth="lg" id="home-container">
         <RoomList />
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error">
-            {error && error}
-          </Alert>
-        </Snackbar>
+        {open && <Snackbars isOpen={open} severity="error" content={error} />}
       </Container>
     </div>
   );
