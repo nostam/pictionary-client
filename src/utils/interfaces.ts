@@ -78,3 +78,9 @@ export interface ICanvas {
   dataURL: string;
   room: string;
 }
+
+export interface IRegisterData {
+  username?: string;
+  password?: string;
+  email?: string;
+}

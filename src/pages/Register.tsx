@@ -1,23 +1,22 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import Logo from "../logo.svg";
-
+import { IRegisterData, IAlert, Severity } from "../utils/interfaces";
 import { makeStyles } from "@material-ui/core/styles";
-
 import {
   Container,
   Avatar,
   Button,
   CssBaseline,
   TextField,
-  FormControlLabel,
-  Checkbox,
   Grid,
   Link,
   Typography,
   CircularProgress,
   colors,
 } from "@material-ui/core";
+import Snackbars from "../components/Snackbars";
+import { fetchBe } from "../utils/fetch";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -58,17 +57,51 @@ export default function Register() {
   const history = useHistory();
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
+  const [input, setInput] = React.useState<IRegisterData | undefined>();
+  const [alert, setAlert] = React.useState<IAlert | undefined>();
+  const [openAlert, setOpenAlert] = React.useState(false);
+
   const timer = React.useRef<number>();
 
-  const handleButtonClick = (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!loading) {
-      setSuccess(false);
-      setLoading(true);
-      timer.current = window.setTimeout(() => {
-        setSuccess(true);
-        setLoading(false);
-      }, 2000);
+  function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
+    setInput({ ...input, [e.target.name]: e.target.value });
+  }
+
+  const handleAlert = React.useCallback((type: Severity, message: string) => {
+    setAlert({ type, message });
+    setOpenAlert(true);
+  }, []);
+
+  const clearAlert = React.useCallback(() => {
+    setOpenAlert(false);
+    setAlert(undefined);
+  }, []);
+
+  const handleButtonClick = async (
+    e: React.SyntheticEvent<HTMLFormElement>
+  ) => {
+    try {
+      e.preventDefault();
+      if (!loading) {
+        clearAlert();
+        setSuccess(false);
+        setLoading(true);
+        const res = await fetchBe.post("/users/register", input);
+        if (res.status === 201) {
+          handleAlert(
+            "success",
+            "Account created successfully, redirecting back to login page."
+          );
+          timer.current = window.setTimeout(() => {
+            setSuccess(true);
+            setLoading(false);
+          }, 1000);
+        }
+      }
+    } catch (error) {
+      setLoading(false);
+      const msg = error.response.data.error ?? error.message;
+      handleAlert("error", msg);
     }
   };
 
@@ -96,11 +129,23 @@ export default function Register() {
             margin="normal"
             required
             fullWidth
+            id="email"
+            label="Email"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            onChange={handleInput}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
             id="username"
             label="Username"
             name="username"
             autoComplete="username"
-            autoFocus
+            onChange={handleInput}
           />
           <TextField
             variant="outlined"
@@ -112,10 +157,7 @@ export default function Register() {
             type="password"
             id="password"
             autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            onChange={handleInput}
           />
           <div className={classes.wrapper}>
             <Button
@@ -142,6 +184,13 @@ export default function Register() {
           </Grid>
         </form>
       </div>
+      {openAlert && (
+        <Snackbars
+          severity={alert!.type}
+          content={alert!.message}
+          isOpen={openAlert}
+        />
+      )}
     </Container>
   );
 }

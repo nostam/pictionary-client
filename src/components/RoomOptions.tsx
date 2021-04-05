@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { useAppDispatch } from "../utils/hooks";
-import { difficulties, gamemode, apiURL } from "../utils/constants";
+import { difficulties, gamemode } from "../utils/constants";
 import { updateGame } from "../store/reducers/game";
 
 function getModalStyle() {

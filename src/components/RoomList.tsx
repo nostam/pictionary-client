@@ -9,7 +9,6 @@ import "../styles/RoomList.scss";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import { initList } from "../store/reducers/rooms";
 import { updateError } from "../store/reducers/status";
-import { apiURL } from "../utils/constants";
 import { fetchBe } from "../utils/fetch";
 
 dayjs.extend(relativeTime);
@@ -26,15 +25,20 @@ function RoomList() {
   const getRoomList = useCallback(async () => {
     try {
       const res = await fetchBe.get("/rooms");
-      if (res.status === 200) dispatch(initList(res.data));
+      if (res.status === 200 && res.data.rooms.length > 0)
+        dispatch(initList(res.data.rooms));
     } catch (error) {
       console.log(error);
-      const msg = error.response ?? "Server is downed, please try again later.";
+      const msg = "Server is downed, please try again later." ?? error.response;
       dispatch(updateError(msg));
     }
   }, [dispatch]);
 
   const joinRoom = (id: string) => history.push(`/r/${id}`);
+
+  useEffect(() => {
+    getRoomList();
+  }, [getRoomList]);
 
   useEffect(() => {
     const updateRoomList = setInterval(() => {
