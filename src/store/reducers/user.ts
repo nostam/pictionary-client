@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../index";
 import { IUser } from "../../utils/interfaces";
 interface userState {
-  user: IUser;
+  user: IUser | undefined;
   loading: boolean;
   errMsg: String | null;
 }
 const initialState: userState = {
-  user: {},
+  user: undefined,
   loading: false,
   errMsg: null,
 };
@@ -23,7 +23,7 @@ export const userSlice = createSlice({
       state.errMsg = action.payload;
     },
     setCurrentUser: (state, action: PayloadAction<object>) => {
-      state.user = action.payload;
+      state.user = { ...state.user, ...action.payload };
       state.loading = false;
     },
   },

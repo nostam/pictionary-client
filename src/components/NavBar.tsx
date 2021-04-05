@@ -57,7 +57,7 @@ export default function MenuAppBar() {
           <Typography variant="h6" className={classes.title}>
             <Link to="/">Pictionary</Link>
           </Typography>
-          {user._id && (
+          {user && (
             <div>
               <IconButton
                 aria-label="account of current user"

@@ -16,6 +16,8 @@ import {
 import { colors } from "../utils/constants";
 import { fetchBe } from "../utils/fetch";
 import { IAlert, Severity } from "../utils/interfaces";
+import { useAppDispatch } from "../utils/hooks";
+import { setCurrentUser } from "../store/reducers/user";
 import Snackbars from "../components/Snackbars";
 
 const useStyles = makeStyles((theme) => ({
@@ -55,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const classes = useStyles();
   const history = useHistory();
+  const dispatch = useAppDispatch();
   const [input, setInput] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -87,15 +90,17 @@ export default function Login() {
         setLoading(true);
         const res = await fetchBe.post("/users/login", input);
         if (res.status === 200) {
+          dispatch(setCurrentUser(res.data.user));
           timer.current = window.setTimeout(() => {
             setSuccess(true);
             setLoading(false);
-          }, 1000);
+          }, 500);
         }
       }
     } catch (error) {
       setLoading(false);
-      handleAlert("error", error.response.data.error);
+      const msg = error.response.data.error ?? error.message;
+      handleAlert("error", msg);
     }
   };
 

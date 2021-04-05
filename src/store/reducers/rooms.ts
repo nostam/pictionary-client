@@ -30,7 +30,7 @@ export const roomList = createSlice({
       );
     },
     initList: (state, action) => {
-      state.rooms = action.payload;
+      state.rooms = { ...state.rooms, ...action.payload };
     },
   },
 });
