@@ -1,7 +1,8 @@
 import { useCallback, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Paper } from "@material-ui/core";
-import Add from "@material-ui/icons/Add";
+import { Paper, Avatar } from "@material-ui/core";
+import AvatarGroup from "@material-ui/lab/AvatarGroup";
+import { Add, Person } from "@material-ui/icons";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import RoomOptions from "./RoomOptions";
@@ -58,7 +59,21 @@ function RoomList() {
             key={`room${i}`}
             onClick={() => joinRoom(room._id!)}
           >
-            <span>Members: {room.users!.length}</span>
+            <AvatarGroup max={6}>
+              {room.users!.map((user, i) => {
+                return user.avatar ? (
+                  <Avatar
+                    src={user.avatar}
+                    alt={user.username}
+                    key={`${room}-${i}`}
+                  />
+                ) : (
+                  <Avatar key={`${room}-${i}`} alt="Guest">
+                    <Person fontSize="large" />
+                  </Avatar>
+                );
+              })}
+            </AvatarGroup>
             <span>Difficulty: {room.difficulty}</span>
             <span>{dayjs(room.createdAt).fromNow()}</span>
           </Paper>

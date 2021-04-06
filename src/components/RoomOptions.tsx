@@ -137,7 +137,11 @@ export default function SimpleModal({ open, handleModal }: IProps) {
           >
             {gamemode.toString()}
             {gamemode.map((mode, i) => (
-              <MenuItem key={`mode${i}`} value={mode.value}>
+              <MenuItem
+                key={`mode${i}`}
+                value={mode.value}
+                disabled={i > 0 ? true : false}
+              >
                 {mode.value}
               </MenuItem>
             ))}
