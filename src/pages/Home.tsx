@@ -5,7 +5,6 @@ import RoomList from "../components/RoomList";
 import Snackbars from "../components/Snackbars";
 import { useAppDispatch } from "../utils/hooks";
 import { setCurrentUser } from "../store/reducers/user";
-import { updateError } from "../store/reducers/status";
 import fetchAuth from "../utils/fetch";
 import "../styles/Home.scss";
 
@@ -19,6 +18,7 @@ function Home() {
   }, [error]);
 
   React.useEffect(() => {
+    const rmb = document.cookie.indexOf("rmb") !== -1;
     async function fetchMe() {
       try {
         const res = await fetchAuth.get("/users/me");
@@ -27,7 +27,7 @@ function Home() {
         console.log(error.message);
       }
     }
-    fetchMe();
+    if (rmb) fetchMe();
   }, [dispatch]);
   return (
     <div id="home">

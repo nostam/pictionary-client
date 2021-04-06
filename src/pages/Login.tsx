@@ -99,7 +99,7 @@ export default function Login() {
       }
     } catch (error) {
       setLoading(false);
-      const msg = error.response.data.error ?? error.message;
+      const msg = error.response!.data.error ?? error.message;
       handleAlert("error", msg);
     }
   };

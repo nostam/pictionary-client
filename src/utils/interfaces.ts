@@ -21,7 +21,7 @@ export interface IRoom {
 }
 export interface IUser {
   _id?: string;
-  nickname?: string;
+  username?: string;
   firstName?: string;
   lastName?: string;
   password?: string;

@@ -8,11 +8,13 @@ import {
   Menu,
   Typography,
   IconButton,
+  Button,
+  Avatar,
 } from "@material-ui/core";
-
+import fetchAuth from "../utils/fetch";
 import MenuIcon from "@material-ui/icons/Menu";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import { useAppSelector } from "../utils/hooks";
+import { useAppSelector, useAppDispatch } from "../utils/hooks";
+import { clearUser } from "../store/reducers/user";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -33,6 +35,8 @@ export default function MenuAppBar() {
   const { user } = useAppSelector((state) => state.user);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const ref = React.createRef<HTMLDivElement>();
+  const dispatch = useAppDispatch();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -41,7 +45,15 @@ export default function MenuAppBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleLogout = async () => {
+    try {
+      await fetchAuth.post("/users/logout");
+      dispatch(clearUser());
+    } catch (error) {
+      console.log(error);
+    }
+    handleClose();
+  };
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -57,7 +69,7 @@ export default function MenuAppBar() {
           <Typography variant="h6" className={classes.title}>
             <Link to="/">Pictionary</Link>
           </Typography>
-          {user && (
+          {user ? (
             <div>
               <IconButton
                 aria-label="account of current user"
@@ -66,9 +78,10 @@ export default function MenuAppBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <AccountCircle />
+                <Avatar src={user.avatar} alt={user.username!} />
               </IconButton>
               <Menu
+                ref={ref}
                 id="menu-appbar"
                 anchorEl={anchorEl}
                 anchorOrigin={{
@@ -84,9 +97,16 @@ export default function MenuAppBar() {
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                {/* <MenuItem onClick={handleClose}>My account</MenuItem> */}
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </div>
+          ) : (
+            <Link to="login">
+              <Button color="inherit" style={{ color: "white" }}>
+                Login
+              </Button>
+            </Link>
           )}
         </Toolbar>
       </AppBar>
