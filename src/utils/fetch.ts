@@ -7,12 +7,13 @@ const fetchAuth = axios.create({
   withCredentials: true,
 });
 
-const refreshAuthLogic = (failedRequest: unknown) =>
-  axios
-    .post("/users/refreshToken", { withCredentials: true })
-    .then((tokenRefreshResponse) => {
-      return Promise.resolve();
-    });
-createAuthRefreshInterceptor(axios, refreshAuthLogic);
-
+const refreshAuthLogic = (failedRequest: any) =>
+  axios({
+    url: `${apiURL}/users/refreshToken`,
+    method: "POST",
+    withCredentials: true,
+  }).then((tokenRefreshResponse) => {
+    return Promise.resolve();
+  });
+createAuthRefreshInterceptor(fetchAuth, refreshAuthLogic);
 export default fetchAuth;

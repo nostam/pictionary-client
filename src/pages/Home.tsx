@@ -24,7 +24,7 @@ function Home() {
         const res = await fetchAuth.get("/users/me");
         if (res.status === 200) dispatch(setCurrentUser(res.data));
       } catch (error) {
-        dispatch(updateError(error.message));
+        console.log(error.message);
       }
     }
     fetchMe();
