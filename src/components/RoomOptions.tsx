@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { fetchBe } from "../utils/fetch";
+import fetchAuth from "../utils/fetch";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import {
   Select,
@@ -83,7 +83,7 @@ export default function SimpleModal({ open, handleModal }: IProps) {
 
   const createNewGame = useCallback(async () => {
     try {
-      const { data } = await fetchBe.post("/rooms/create", settings);
+      const { data } = await fetchAuth.post("/rooms/create", settings);
       return data;
     } catch (error) {
       console.log(error);

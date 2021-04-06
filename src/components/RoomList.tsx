@@ -9,7 +9,7 @@ import "../styles/RoomList.scss";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import { initList } from "../store/reducers/rooms";
 import { updateError } from "../store/reducers/status";
-import { fetchBe } from "../utils/fetch";
+import fetchAuth from "../utils/fetch";
 
 dayjs.extend(relativeTime);
 
@@ -24,7 +24,7 @@ function RoomList() {
   }
   const getRoomList = useCallback(async () => {
     try {
-      const res = await fetchBe.get("/rooms");
+      const res = await fetchAuth.get("/rooms");
       if (res.status === 200 && res.data.rooms.length > 0)
         dispatch(initList(res.data.rooms));
     } catch (error) {

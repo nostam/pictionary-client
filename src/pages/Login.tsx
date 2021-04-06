@@ -14,7 +14,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import { colors } from "../utils/constants";
-import { fetchBe } from "../utils/fetch";
+import fetchAuth from "../utils/fetch";
 import { IAlert, Severity } from "../utils/interfaces";
 import { useAppDispatch } from "../utils/hooks";
 import { setCurrentUser } from "../store/reducers/user";
@@ -88,7 +88,7 @@ export default function Login() {
         clearAlert();
         setSuccess(false);
         setLoading(true);
-        const res = await fetchBe.post("/users/login", input);
+        const res = await fetchAuth.post("/users/login", input);
         if (res.status === 200) {
           dispatch(setCurrentUser(res.data.user));
           timer.current = window.setTimeout(() => {

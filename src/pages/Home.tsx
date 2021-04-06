@@ -5,6 +5,7 @@ import RoomList from "../components/RoomList";
 import Snackbars from "../components/Snackbars";
 import { useAppDispatch } from "../utils/hooks";
 import { setCurrentUser } from "../store/reducers/user";
+import { updateError } from "../store/reducers/status";
 import fetchAuth from "../utils/fetch";
 import "../styles/Home.scss";
 
@@ -19,10 +20,11 @@ function Home() {
 
   React.useEffect(() => {
     async function fetchMe() {
-      const res = await fetchAuth.get("/users/me");
-      if (res.status === 200) {
-        dispatch(setCurrentUser(res.data));
-        console.log(res.data);
+      try {
+        const res = await fetchAuth.get("/users/me");
+        if (res.status === 200) dispatch(setCurrentUser(res.data));
+      } catch (error) {
+        dispatch(updateError(error.message));
       }
     }
     fetchMe();

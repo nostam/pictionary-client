@@ -15,7 +15,7 @@ import { colors, marks, apiURL } from "../utils/constants";
 import { IRoomChat, ICanvas } from "../utils/interfaces";
 import { updateError } from "../store/reducers/status";
 import { updateGame } from "../store/reducers/game";
-import { fetchBe } from "../utils/fetch";
+import fetchAuth from "../utils/fetch";
 import "../styles/Whiteboard.scss";
 
 // type Coordinate = { x: number; y: number };
@@ -130,7 +130,7 @@ function Whiteboard() {
   // Callbacks
   const checkRoomId = useCallback(async () => {
     try {
-      const res = await fetchBe.get(`/rooms/${room}`);
+      const res = await fetchAuth.get(`/rooms/${room}`);
       if (res.status === 200) dispatch(updateGame(res.data));
     } catch (error) {
       dispatch(updateError("Room doesn't exists"));

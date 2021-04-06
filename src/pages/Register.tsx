@@ -16,7 +16,7 @@ import {
   colors,
 } from "@material-ui/core";
 import Snackbars from "../components/Snackbars";
-import { fetchBe } from "../utils/fetch";
+import fetchAuth from "../utils/fetch";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -86,7 +86,7 @@ export default function Register() {
         clearAlert();
         setSuccess(false);
         setLoading(true);
-        const res = await fetchBe.post("/users/register", input);
+        const res = await fetchAuth.post("/users/register", input);
         if (res.status === 201) {
           handleAlert(
             "success",
