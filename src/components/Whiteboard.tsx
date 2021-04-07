@@ -61,7 +61,7 @@ function Whiteboard() {
   const [color, setColor] = useState<string>("black");
   const [stroke, setStroke] = useState<number>(12);
   const [showBrush, setShowBrush] = useState<HTMLDivElement | null>(null);
-  const [isAuthor, setIsAuthor] = useState(false);
+  const [isAuthor, setIsAuthor] = useState(true);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -101,18 +101,15 @@ function Whiteboard() {
     context.lineWidth = stroke;
   }, [stroke, color]);
 
-  function allowDraw() {
-    return game.status === "waiting" || isAuthor;
-  }
-
   function startDrawing(e: MouseEvent) {
     if (!isAuthor) return;
     const { offsetX, offsetY } = e;
+    setIsDrawing(true);
     contextRef.current!.beginPath();
     contextRef.current!.moveTo(offsetX, offsetY);
-    setIsDrawing(true);
   }
   function finishDrawing(e: MouseEvent) {
+    if (!isAuthor) return;
     const { offsetX, offsetY } = e;
     contextRef.current!.lineTo(offsetX, offsetY);
     contextRef.current!.stroke();
@@ -123,14 +120,15 @@ function Whiteboard() {
     socket.emit("canvasData", msg);
   }
   function draw(e: MouseEvent) {
-    if (!isDrawing) return;
+    if (!isAuthor || !isDrawing) return;
     const { offsetX, offsetY } = e;
     contextRef.current!.lineTo(offsetX, offsetY);
     contextRef.current!.stroke();
   }
-  const handleClickPen = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClickPen = (e: React.MouseEvent<HTMLDivElement>) =>
     setShowBrush(e.currentTarget);
-  };
+
+  const eraser = () => socket.emit("newCanvas", room);
 
   // Callbacks
   const checkRoomId = useCallback(async () => {
@@ -138,7 +136,7 @@ function Whiteboard() {
       const res = await fetchAuth.get(`/rooms/${room}`);
       if (res.status === 200) dispatch(updateGame(res.data));
     } catch (error) {
-      dispatch(updateError("Room doesn't exists"));
+      dispatch(updateError("Room has expired or does not exist."));
       history.push("/");
     }
   }, [dispatch, history]);
@@ -190,7 +188,6 @@ function Whiteboard() {
   // check if user is Author or not
   useEffect(() => {
     if (
-      game.status &&
       game.status === "started" &&
       game.round! <= game.words!.length &&
       game.draw![game.round!] !== undefined
@@ -199,7 +196,7 @@ function Whiteboard() {
         ? setIsAuthor(true)
         : setIsAuthor(false);
     } else {
-      setIsAuthor(false);
+      game.status === "ended" ? setIsAuthor(false) : setIsAuthor(true);
     }
   }, [game, isAuthor, isGameCompleted]);
 
@@ -230,13 +227,10 @@ function Whiteboard() {
       }
       if (timer === 0) setInitNextRound(true);
     }
-  }, [game, timer, startNextRound, isGameCompleted]);
+  }, [game, timer, isGameCompleted]);
 
   useEffect(() => {
-    if (initNextRound) {
-      console.log("logger");
-      startNextRound();
-    }
+    if (initNextRound) startNextRound();
   }, [initNextRound, startNextRound]);
 
   // Chat
@@ -270,7 +264,7 @@ function Whiteboard() {
         <Container
           id="drawingTools"
           style={{
-            visibility: allowDraw() ? "visible" : "hidden",
+            visibility: isAuthor ? "visible" : "hidden",
           }}
         >
           <Popover
@@ -328,17 +322,13 @@ function Whiteboard() {
               ))}
             </div>
           </div>
-          <LayersClear className="drawingtoolsIcon" />
+          <LayersClear className="drawingtoolsIcon" onClick={() => eraser()} />
         </Container>
         <canvas
           id="canvas"
           ref={canvasRef}
-          onMouseDown={(e) => {
-            if (allowDraw()) startDrawing(e.nativeEvent);
-          }}
-          onMouseUp={(e) => {
-            if (allowDraw()) finishDrawing(e.nativeEvent);
-          }}
+          onMouseDown={(e) => startDrawing(e.nativeEvent)}
+          onMouseUp={(e) => finishDrawing(e.nativeEvent)}
           onMouseMove={(e) => draw(e.nativeEvent)}
         />
         <div
