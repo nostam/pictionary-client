@@ -1,11 +1,21 @@
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  animals,
+} from "unique-names-generator";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../index";
 import { IUser } from "../../utils/interfaces";
+
 interface userState {
-  user: IUser | undefined;
+  user: IUser;
 }
 const initialState: userState = {
-  user: undefined,
+  user: {
+    username: uniqueNamesGenerator({
+      dictionaries: [adjectives, animals],
+    }),
+  },
 };
 
 export const userSlice = createSlice({
@@ -16,7 +26,7 @@ export const userSlice = createSlice({
       state.user = { ...state.user, ...action.payload };
     },
     clearUser: (state) => {
-      state.user = undefined;
+      state.user = initialState.user;
     },
   },
 });

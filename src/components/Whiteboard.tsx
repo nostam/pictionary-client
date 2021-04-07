@@ -15,6 +15,7 @@ import { colors, marks, apiURL } from "../utils/constants";
 import { IRoomChat, ICanvas } from "../utils/interfaces";
 import { updateError } from "../store/reducers/status";
 import { updateGame } from "../store/reducers/game";
+
 import fetchAuth from "../utils/fetch";
 import "../styles/Whiteboard.scss";
 
@@ -52,7 +53,7 @@ function Whiteboard() {
   // >();
   const [logs, setLogs] = useState<IRoomChat[]>([]);
   const [msg, setMsg] = useState<IRoomChat>({
-    from: user ? user.username! : `Guest${Math.floor(Math.random() * 10)}`,
+    from: user!.username,
     message: "",
     round: 0,
     room,
