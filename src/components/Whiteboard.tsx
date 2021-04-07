@@ -190,7 +190,7 @@ function Whiteboard() {
       game.round! <= game.words!.length &&
       game.draw![game.round!] !== undefined
     ) {
-      game.draw![game.round!].users!.includes(socket.id)
+      game.draw![game.round!].users.some((u) => u.socketId === socket.id)
         ? setIsAuthor(true)
         : setIsAuthor(false);
     } else {
@@ -249,11 +249,11 @@ function Whiteboard() {
     setMsg({ ...msg, message: "" });
   }
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
-    setMsg({ ...msg, message: e.target.value });
+    if (!isAuthor) setMsg({ ...msg, message: e.target.value });
   }
   function handleInputMsg(e: React.KeyboardEvent<HTMLInputElement>) {
     e.preventDefault();
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !isAuthor) {
       sendMsg();
     }
   }
@@ -379,7 +379,9 @@ function Whiteboard() {
             <Input
               id="inputbox"
               value={msg.message}
-              placeholder="Enter your message here"
+              placeholder={
+                isAuthor ? "Shhh! You are muted!" : "Enter your message here"
+              }
               onChange={handleInput}
               onKeyUp={handleInputMsg}
               inputProps={{ "aria-label": "description" }}

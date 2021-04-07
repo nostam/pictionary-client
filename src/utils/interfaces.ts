@@ -34,10 +34,11 @@ export interface IUser {
   socketId?: string;
   createdAt?: string;
   modifiedAt?: string;
+  point?: number;
 }
 export interface IPlayers {
   round: number;
-  users: string[];
+  users: IUser[];
 }
 
 export enum difficulty {

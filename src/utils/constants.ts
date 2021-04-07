@@ -41,6 +41,7 @@ export const marks = [
     value: 96,
     label: "96px",
   },
+  { value: 256, label: "256px" },
 ];
 
 export const difficulties = [
