@@ -30,7 +30,9 @@ function RoomList() {
         dispatch(initList(res.data.rooms));
     } catch (error) {
       console.log(error);
-      const msg = "Server is downed, please try again later." ?? error.response;
+      const msg =
+        "Server is downed, please try again later." ??
+        error.response.data.error;
       dispatch(updateError(msg));
     }
   }, [dispatch]);

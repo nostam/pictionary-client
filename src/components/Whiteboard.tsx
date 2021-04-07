@@ -100,6 +100,10 @@ function Whiteboard() {
     context.lineWidth = stroke;
   }, [stroke, color]);
 
+  function allowDraw() {
+    return game.status === "waiting" || isAuthor;
+  }
+
   function startDrawing(e: MouseEvent) {
     if (!isAuthor) return;
     const { offsetX, offsetY } = e;
@@ -264,7 +268,9 @@ function Whiteboard() {
       <div id="whiteboard">
         <Container
           id="drawingTools"
-          style={{ visibility: isAuthor ? "visible" : "hidden" }}
+          style={{
+            visibility: allowDraw() ? "visible" : "hidden",
+          }}
         >
           <Popover
             open={Boolean(showBrush)}
@@ -326,8 +332,12 @@ function Whiteboard() {
         <canvas
           id="canvas"
           ref={canvasRef}
-          onMouseDown={(e) => startDrawing(e.nativeEvent)}
-          onMouseUp={(e) => finishDrawing(e.nativeEvent)}
+          onMouseDown={(e) => {
+            if (allowDraw()) startDrawing(e.nativeEvent);
+          }}
+          onMouseUp={(e) => {
+            if (allowDraw()) finishDrawing(e.nativeEvent);
+          }}
           onMouseMove={(e) => draw(e.nativeEvent)}
         />
         <div
