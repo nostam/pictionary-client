@@ -52,7 +52,7 @@ function Whiteboard() {
   // >();
   const [logs, setLogs] = useState<IRoomChat[]>([]);
   const [msg, setMsg] = useState<IRoomChat>({
-    from: `demo${Math.floor(Math.random() * 10)}`,
+    from: user ? user.username! : `Guest${Math.floor(Math.random() * 10)}`,
     message: "",
     round: 0,
     room,
@@ -60,7 +60,7 @@ function Whiteboard() {
   const [color, setColor] = useState<string>("black");
   const [stroke, setStroke] = useState<number>(12);
   const [showBrush, setShowBrush] = useState<HTMLDivElement | null>(null);
-  const [isAuthor, setIsAuthor] = useState(true);
+  const [isAuthor, setIsAuthor] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -194,13 +194,14 @@ function Whiteboard() {
         ? setIsAuthor(true)
         : setIsAuthor(false);
     } else {
-      setIsAuthor(true);
+      setIsAuthor(false);
     }
   }, [game, isAuthor, isGameCompleted]);
 
   const gameIsCompleted = useCallback(() => {
     dispatch(updateGame({ status: "ended" }));
     updateStatus("ended");
+    setIsAuthor(false);
   }, [dispatch, updateStatus]);
 
   const startNextRound = useCallback(() => {
@@ -379,6 +380,7 @@ function Whiteboard() {
             <Input
               id="inputbox"
               value={msg.message}
+              disabled={isAuthor ? true : false}
               placeholder={
                 isAuthor ? "Shhh! You are muted!" : "Enter your message here"
               }

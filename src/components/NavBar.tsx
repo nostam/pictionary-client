@@ -15,6 +15,7 @@ import fetchAuth from "../utils/fetch";
 import MenuIcon from "@material-ui/icons/Menu";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import { clearUser } from "../store/reducers/user";
+import { clearGame } from "../store/reducers/game";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -49,6 +50,7 @@ export default function MenuAppBar() {
     try {
       await fetchAuth.post("/users/logout");
       dispatch(clearUser());
+      dispatch(clearGame());
     } catch (error) {
       console.log(error);
     }

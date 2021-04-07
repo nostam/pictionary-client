@@ -20,7 +20,10 @@ export const gameSlice = createSlice({
     updateGame: (state, action) => {
       state.game = { ...state.game, ...action.payload };
     },
+    clearGame: (state) => {
+      state.game = initialState.game;
+    },
   },
 });
-export const { updateGame } = gameSlice.actions;
+export const { updateGame, clearGame } = gameSlice.actions;
 export default gameSlice.reducer;
