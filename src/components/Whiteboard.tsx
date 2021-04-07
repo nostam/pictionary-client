@@ -170,7 +170,7 @@ function Whiteboard() {
     if (room) checkRoomId();
 
     return () => {
-      socket.emit("leaveRoom", room);
+      socket.emit("leaveRoom", { room, user });
       socket.removeAllListeners();
       socket.disconnect();
     };
