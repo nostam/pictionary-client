@@ -4,16 +4,18 @@ import "../styles/Intro.scss";
 export default function Intro() {
   return (
     <Grid md={false} lg={6} id="intro-wrapper">
+      <Typography variant="h3">Pictionary</Typography>
+      <Typography variant="subtitle1">
+        A word-guessing game with drawings
+      </Typography>
+      <br />
       <div id="intro-video">demo video here</div>
-      <Typography component="h2" variant="h5">
-        Pictionary - A word-guessing game with drawings!
-      </Typography>
-      <Typography component="h5">
-        Everyone can join and play with regisration
-      </Typography>
-      <hr />
       <Typography variant="h6">
-        Additional features for register user:
+        Everyone can join and play without any regisration
+      </Typography>
+      <br />
+      <Typography variant="body1">
+        Bonus features for register user:
         <ul>
           <li className="intro-list">
             Points - Player who drew or guessed correctly
