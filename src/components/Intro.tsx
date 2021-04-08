@@ -1,20 +1,28 @@
-import React from "react";
-import Typography from "@material-ui/core/Typography";
+import { Grid, Typography } from "@material-ui/core";
+import "../styles/Intro.scss";
 
 export default function Intro() {
   return (
-    <div>
-      <div
-        style={{ width: "480px", height: "320px", backgroundColor: "white" }}
-      >
-        demo video here
-      </div>
+    <Grid md={false} lg={6} id="intro-wrapper">
+      <div id="intro-video">demo video here</div>
       <Typography component="h2" variant="h5">
-        What is pictionary?
+        Pictionary - A word-guessing game with drawings!
       </Typography>
-      <Typography component="h4" variant="h6">
-        A word-guessing game with drawings for everyone!
+      <Typography component="h5">
+        Everyone can join and play with regisration
       </Typography>
-    </div>
+      <hr />
+      <Typography variant="h6">
+        Additional features for register user:
+        <ul>
+          <li className="intro-list">
+            Points - Player who drew or guessed correctly
+          </li>
+          <li className="intro-list">Ranking</li>
+          <li className="intro-list">Customize site theme color</li>
+          <li className="intro-list">Voting for best illustrations</li>
+        </ul>
+      </Typography>
+    </Grid>
   );
 }
