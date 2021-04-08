@@ -3,10 +3,9 @@ import { useHistory } from "react-router-dom";
 import Logo from "../logo.svg";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  Container,
+  Paper,
   Avatar,
   Button,
-  CssBaseline,
   TextField,
   Grid,
   Link,
@@ -21,8 +20,23 @@ import { setCurrentUser } from "../store/reducers/user";
 import Snackbars from "../components/Snackbars";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    height: "100vh",
+    "& a": { color: "#b27d00" },
+  },
+  image: {
+    backgroundImage: "url(https://source.unsplash.com/random)",
+    backgroundRepeat: "no-repeat",
+    backgroundColor:
+      theme.palette.type === "light"
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  },
   paper: {
-    marginTop: theme.spacing(8),
+    margin: theme.spacing(8, 4),
+    padding: theme.spacing(24),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -115,78 +129,92 @@ export default function Login() {
   }, [success, history]);
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar} src={Logo} />
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form className={classes.form} noValidate onSubmit={handleButtonClick}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            autoComplete="username"
-            autoFocus
-            onChange={handleInput}
+    <Grid container component="main" className={classes.root}>
+      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <div className={classes.paper}>
+          <Avatar
+            className={classes.avatar}
+            src={Logo}
+            onClick={() => history.push("/")}
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            onChange={handleInput}
-          />
-          {/* <FormControlLabel
+
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <form
+            className={classes.form}
+            noValidate
+            onSubmit={handleButtonClick}
+          >
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              autoFocus
+              onChange={handleInput}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              onChange={handleInput}
+            />
+            {/* <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           /> */}
-          <div className={classes.wrapper}>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              disabled={loading}
-              size="large"
-            >
-              Sign In
-            </Button>
-            {loading && (
-              <CircularProgress size={24} className={classes.buttonProgress} />
-            )}
-          </div>
-          <Grid container>
-            <Grid item xs>
-              {/* <Link href="#" variant="body2">
+            <div className={classes.wrapper}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                disabled={loading}
+                size="large"
+              >
+                Sign In
+              </Button>
+              {loading && (
+                <CircularProgress
+                  size={24}
+                  className={classes.buttonProgress}
+                />
+              )}
+            </div>
+            <Grid container>
+              <Grid item xs>
+                {/* <Link href="#" variant="body2">
                 Forgot password?
               </Link> */}
+              </Grid>
+              <Grid item>
+                <Link href="/register" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-      {openAlert && (
-        <Snackbars
-          severity={alert!.type}
-          content={alert!.message}
-          isOpen={openAlert}
-        />
-      )}
-    </Container>
+          </form>
+        </div>
+        {openAlert && (
+          <Snackbars
+            severity={alert!.type}
+            content={alert!.message}
+            isOpen={openAlert}
+          />
+        )}
+      </Grid>
+    </Grid>
   );
 }

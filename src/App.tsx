@@ -19,11 +19,11 @@ function App() {
         <>
           <CssBaseline />
           <BrowserRouter>
-            <Route path="/" component={NavBar} />
-            <Route path="/r/:id" component={Room} />
-            <Route path="/u/:id" component={User} />
+            <Route path={["/", "/r/:id", "/u/:id"]} exact component={NavBar} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
+            <Route path="/r/:id" component={Room} />
+            <Route path="/u/:id" component={User} />
             <Route path="/" exact component={Home} />
           </BrowserRouter>
         </>
