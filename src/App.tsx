@@ -7,17 +7,27 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Room from "./pages/Room";
 import Home from "./pages/Home";
+import User from "./pages/User";
+import { ThemeProvider } from "@material-ui/core/styles";
+import theme from "./theme";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
 function App() {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <Route path="/" component={NavBar} />
-        <Route path="/r/:id" component={Room} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/" exact component={Home} />
-      </BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <>
+          <CssBaseline />
+          <BrowserRouter>
+            <Route path="/" component={NavBar} />
+            <Route path="/r/:id" component={Room} />
+            <Route path="/u/:id" component={User} />
+            <Route path="/login" component={Login} />
+            <Route path="/register" component={Register} />
+            <Route path="/" exact component={Home} />
+          </BrowserRouter>
+        </>
+      </ThemeProvider>
     </Provider>
   );
 }

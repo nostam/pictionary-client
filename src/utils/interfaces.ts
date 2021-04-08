@@ -18,6 +18,7 @@ export interface IRoom {
   modifiedAt?: Date;
   status?: string;
   round?: number;
+  color?: string;
 }
 export interface IUser {
   _id?: string;
