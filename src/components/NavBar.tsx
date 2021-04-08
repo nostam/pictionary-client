@@ -20,10 +20,10 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      boxShadow: `inset 0 -16px 16px -16px rgba(0,0,0,0.2)`,
+
       "& a": { color: "white" },
     },
-    avatar: { outline: "3px solid white" },
+    avatar: { outline: "3px solid rgba(255,255,255,0.5)" },
     title: {
       alignItems: "flex-end",
       textAlign: "right",
@@ -60,7 +60,12 @@ export default function MenuAppBar() {
   };
   return (
     <div className={classes.root}>
-      <AppBar color="primary" position="static">
+      <AppBar
+        elevation={0}
+        color="primary"
+        position="static"
+        style={{ boxShadow: `inset 0 -16px 16px -16px rgba(0,0,0,0.3)` }}
+      >
         <Toolbar>
           <Grid xs={1} lg={2} item>
             <Typography variant="h6" className={classes.title}>

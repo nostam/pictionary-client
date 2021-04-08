@@ -209,7 +209,6 @@ function Whiteboard() {
   const startNextRound = useCallback(() => {
     setMsg({ ...msg, round: game.round! + 1 });
     dispatch(updateGame({ round: game.round! + 1 }));
-    socket.emit("nextRound", { room, round: game.round! });
     setWord(game.words![game.round!]);
     setInitNextRound(false);
     setTimer(180);
@@ -225,7 +224,11 @@ function Whiteboard() {
         }, 1000);
         return () => clearTimeout(intervalId);
       }
-      if (timer === 0) setInitNextRound(true);
+      if (timer === 0) {
+        setInitNextRound(true);
+        if (socket.id === game!.draw![game!.round!].users.socketId!)
+          socket.emit("nextRound", { room, round: game.round! });
+      }
     }
   }, [game, timer, isGameCompleted]);
 
@@ -241,7 +244,7 @@ function Whiteboard() {
     return () => {
       socket.off("message");
     };
-  }, [logs, startNextRound]);
+  }, [logs]);
 
   function sendMsg() {
     setLogs(logs.concat(msg));

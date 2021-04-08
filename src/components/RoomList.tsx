@@ -61,7 +61,7 @@ function RoomList() {
             key={`room${i}`}
             onClick={() => joinRoom(room._id!)}
           >
-            <AvatarGroup max={6}>
+            <AvatarGroup max={4}>
               {room.users!.map((user, i) => {
                 return user.avatar ? (
                   <Avatar
