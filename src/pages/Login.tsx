@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import Logo from "../logo.svg";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   Paper,
   Avatar,
@@ -12,64 +11,16 @@ import {
   Typography,
   CircularProgress,
 } from "@material-ui/core";
-import { colors } from "../utils/constants";
+import { loginStyles } from "../theme";
 import fetchAuth from "../utils/fetch";
 import { IAlert, Severity } from "../utils/interfaces";
 import { useAppDispatch } from "../utils/hooks";
 import { setCurrentUser } from "../store/reducers/user";
 import Snackbars from "../components/Snackbars";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "100vh",
-    "& a": { color: "#b27d00" },
-  },
-  image: {
-    backgroundImage: "url(https://source.unsplash.com/random)",
-    backgroundRepeat: "no-repeat",
-    backgroundColor:
-      theme.palette.type === "light"
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  },
-  paper: {
-    margin: theme.spacing(8, 4),
-    padding: theme.spacing(24),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    width: "64px",
-    height: "64px",
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  wrapper: {
-    margin: theme.spacing(1),
-    position: "relative",
-  },
-  buttonProgress: {
-    color: colors[10].value,
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    marginTop: -12,
-    marginLeft: -12,
-  },
-}));
+import Intro from "../components/Intro";
 
 export default function Login() {
-  const classes = useStyles();
+  const classes = loginStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
   const [input, setInput] = useState({});
@@ -130,7 +81,9 @@ export default function Login() {
 
   return (
     <Grid container component="main" className={classes.root}>
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      <Grid item xs={false} sm={4} md={7} className={classes.image}>
+        <Intro />
+      </Grid>
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Avatar
@@ -200,9 +153,12 @@ export default function Login() {
               </Link> */}
               </Grid>
               <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
+                <Typography
+                  className={classes.link}
+                  onClick={() => history.push("/register")}
+                >
+                  Don't have an account? Sign Up
+                </Typography>
               </Grid>
             </Grid>
           </form>

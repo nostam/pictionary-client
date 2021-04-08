@@ -9,65 +9,16 @@ import {
   Button,
   TextField,
   Grid,
-  Link,
   Typography,
   CircularProgress,
-  colors,
 } from "@material-ui/core";
 import Snackbars from "../components/Snackbars";
 import fetchAuth from "../utils/fetch";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "100vh",
-    "& a": { color: "#b27d00" },
-  },
-  image: {
-    backgroundImage: "url(https://source.unsplash.com/random)",
-    backgroundRepeat: "no-repeat",
-    backgroundColor:
-      theme.palette.type === "light"
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  },
-  paper: {
-    margin: theme.spacing(8, 4),
-    padding: theme.spacing(24),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    width: "64px",
-    height: "64px",
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  wrapper: {
-    margin: theme.spacing(1),
-    position: "relative",
-  },
-  buttonProgress: {
-    color: colors.green[500],
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    marginTop: -12,
-    marginLeft: -12,
-  },
-}));
+import Intro from "../components/Intro";
+import { loginStyles } from "../theme";
 
 export default function Register() {
-  const classes = useStyles();
+  const classes = loginStyles();
   const history = useHistory();
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
@@ -131,7 +82,9 @@ export default function Register() {
 
   return (
     <Grid container component="main" className={classes.root}>
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      <Grid item xs={false} sm={4} md={7} className={classes.image}>
+        <Intro />
+      </Grid>
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Avatar
@@ -204,9 +157,13 @@ export default function Register() {
             </div>
             <Grid container justify="flex-end">
               <Grid item>
-                <Link href="/login" variant="body2">
+                <Typography
+                  className={classes.link}
+                  variant="body2"
+                  onClick={() => history.push("/login")}
+                >
                   Already have an account? Sign in
-                </Link>
+                </Typography>
               </Grid>
             </Grid>
           </form>
