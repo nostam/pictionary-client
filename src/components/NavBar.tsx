@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       "& a": { color: "black" },
     },
-    avatar: { outline: "3px solid rgba(255,255,255,0.5)" },
     appbar: { boxShadow: `inset 0 -16px 16px -16px rgba(0,0,0,0.3)` },
     title: {
       alignItems: "flex-end",
@@ -49,6 +48,7 @@ export default function MenuAppBar() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const handleLogout = async () => {
     try {
       await fetchAuth.post("/users/logout");
@@ -84,11 +84,7 @@ export default function MenuAppBar() {
                   onClick={handleMenu}
                   color="inherit"
                 >
-                  <Avatar
-                    src={user.avatar}
-                    alt={user.username!}
-                    className={classes.avatar}
-                  />
+                  <Avatar src={user.avatar} alt={user.username!} />
                 </IconButton>
                 <Menu
                   ref={ref}
@@ -106,7 +102,9 @@ export default function MenuAppBar() {
                   open={open}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <Link to={`/u/${user._id}`}>
+                    <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  </Link>
                   {/* <MenuItem onClick={handleClose}>My account</MenuItem> */}
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
