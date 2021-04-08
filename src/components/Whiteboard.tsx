@@ -9,6 +9,7 @@ import {
   Badge,
   Input,
   Button,
+  Tooltip,
 } from "@material-ui/core";
 import { LayersClear, BorderColor, Send } from "@material-ui/icons";
 import { colors, marks, apiURL } from "../utils/constants";
@@ -192,13 +193,13 @@ function Whiteboard() {
       game.round! <= game.words!.length &&
       game.draw![game.round!] !== undefined
     ) {
-      game.draw![game.round!].users.some((u) => u.socketId === socket.id)
+      game.guess![game.round!].users.some((u) => u.username === user.username)
         ? setIsAuthor(true)
         : setIsAuthor(false);
     } else {
       game.status === "ended" ? setIsAuthor(false) : setIsAuthor(true);
     }
-  }, [game, isAuthor, isGameCompleted]);
+  }, [game, isAuthor, isGameCompleted, user.username]);
 
   const gameIsCompleted = useCallback(() => {
     dispatch(updateGame({ status: "ended" }));
@@ -283,7 +284,7 @@ function Whiteboard() {
               horizontal: "left",
             }}
           >
-            <div id="brush" style={{ height: "200px", padding: "1rem" }}>
+            <div id="brush">
               <Slider
                 value={stroke}
                 getAriaValueText={valuetext}
@@ -310,7 +311,13 @@ function Whiteboard() {
               overlap="circle"
               color="primary"
             >
-              <BorderColor className="drawingtoolsIcon" style={{ color }} />
+              <Tooltip
+                placement="right"
+                title="Bursh Size"
+                aria-label="Bursh Size"
+              >
+                <BorderColor className="drawingtoolsIcon" style={{ color }} />
+              </Tooltip>
             </Badge>
           </div>
           <div id="colorPalettes">
@@ -325,7 +332,16 @@ function Whiteboard() {
               ))}
             </div>
           </div>
-          <LayersClear className="drawingtoolsIcon" onClick={() => eraser()} />
+          <Tooltip
+            placement="right"
+            title="Start a new page"
+            aria-label="Start a new page"
+          >
+            <LayersClear
+              className="drawingtoolsIcon"
+              onClick={() => eraser()}
+            />
+          </Tooltip>
         </Container>
         <canvas
           id="canvas"
@@ -384,9 +400,11 @@ function Whiteboard() {
             <Input
               id="inputbox"
               value={msg.message}
-              disabled={isAuthor ? true : false}
+              disabled={isAuthor && game.status === "started" ? true : false}
               placeholder={
-                isAuthor ? "Shhh! You are muted!" : "Enter your message here"
+                isAuthor && game.status === "started"
+                  ? "Shhh! You are muted!"
+                  : "Enter your message here"
               }
               onChange={handleInput}
               onKeyUp={handleInputMsg}

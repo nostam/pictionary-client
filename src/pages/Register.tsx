@@ -2,7 +2,6 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import Logo from "../logo.svg";
 import { IRegisterData, IAlert, Severity } from "../utils/interfaces";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   Avatar,
   Paper,

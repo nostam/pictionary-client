@@ -16,18 +16,19 @@ import fetchAuth from "../utils/fetch";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import { clearUser } from "../store/reducers/user";
 import { clearGame } from "../store/reducers/game";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      "& a": { color: "white" },
+      "& a": { color: "black" },
     },
     avatar: { outline: "3px solid rgba(255,255,255,0.5)" },
     appbar: { boxShadow: `inset 0 -16px 16px -16px rgba(0,0,0,0.3)` },
     title: {
       alignItems: "flex-end",
       textAlign: "right",
-      "& a": { color: "white", textDecoration: "none" },
+      "& a": { color: "black", textDecoration: "none" },
     },
     grid: { textAlign: "right" },
   })
