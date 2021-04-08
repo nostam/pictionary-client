@@ -226,7 +226,7 @@ function Whiteboard() {
       }
       if (timer === 0) {
         setInitNextRound(true);
-        if (socket.id === game!.draw![game!.round!].users.socketId!)
+        if (socket.id === game!.draw![game!.round!].users[0].socketId!)
           socket.emit("nextRound", { room, round: game.round! });
       }
     }
