@@ -9,6 +9,7 @@ import {
   Grid,
   Typography,
   CircularProgress,
+  useMediaQuery,
 } from "@material-ui/core";
 import { loginStyles } from "../theme";
 import fetchAuth from "../utils/fetch";
@@ -19,6 +20,7 @@ import Snackbars from "../components/Snackbars";
 import Intro from "../components/Intro";
 
 export default function Login() {
+  const singleCol = useMediaQuery("(min-width:700px)");
   const classes = loginStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -80,10 +82,12 @@ export default function Login() {
 
   return (
     <Grid container component="main" className={classes.root}>
-      <Grid item xs={8} className={classes.image}>
-        <Intro />
-      </Grid>
-      <Grid item xs={4} component={Paper} elevation={6} square>
+      {singleCol && (
+        <Grid item md={8} className={classes.image}>
+          <Intro />
+        </Grid>
+      )}
+      <Grid item xs md={4} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Avatar
             className={classes.avatar}

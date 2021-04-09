@@ -10,6 +10,7 @@ import {
   Grid,
   Typography,
   CircularProgress,
+  useMediaQuery,
 } from "@material-ui/core";
 import Snackbars from "../components/Snackbars";
 import fetchAuth from "../utils/fetch";
@@ -17,6 +18,7 @@ import Intro from "../components/Intro";
 import { loginStyles } from "../theme";
 
 export default function Register() {
+  const singleCol = useMediaQuery("(min-width:700px)");
   const classes = loginStyles();
   const history = useHistory();
   const [loading, setLoading] = React.useState(false);
@@ -81,10 +83,12 @@ export default function Register() {
 
   return (
     <Grid container component="main" className={classes.root}>
-      <Grid item xs={false} sm={4} md={7} className={classes.image}>
-        <Intro />
-      </Grid>
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+      {singleCol && (
+        <Grid item md={8} className={classes.image}>
+          <Intro />
+        </Grid>
+      )}
+      <Grid item xs md={4} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <Avatar
             className={classes.avatar}
