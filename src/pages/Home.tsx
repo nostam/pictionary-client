@@ -31,7 +31,7 @@ function Home() {
   }, [dispatch]);
   return (
     <div id="home">
-      <Container maxWidth="lg" id="home-container">
+      <Container maxWidth="lg" id="home-container" disableGutters>
         <RoomList />
         {open && <Snackbars isOpen={open} severity="error" content={error} />}
       </Container>

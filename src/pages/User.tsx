@@ -6,9 +6,8 @@ export default function User() {
   const { user } = useAppSelector((state) => state.user);
   return (
     <div id="user-wrapper">
-      <Grid container>
-        <Grid item xs={4} />
-        <Grid item xs={4}>
+      <Grid container direction="row" justify="center">
+        <Grid item xs={12} md={8} lg={6}>
           <Paper id="user-container" elevation={4}>
             <div className="row userinfo">
               <img src={user.avatar} alt="avatar" id="user-avatar" />
@@ -20,7 +19,6 @@ export default function User() {
             >{`Total Points : ${user.point}`}</Typography>
           </Paper>
         </Grid>
-        <Grid item xs={4} />
       </Grid>
     </div>
   );

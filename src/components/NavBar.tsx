@@ -10,23 +10,27 @@ import {
   IconButton,
   Button,
   Avatar,
-  Grid,
+  Container,
 } from "@material-ui/core";
 import fetchAuth from "../utils/fetch";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
 import { clearUser } from "../store/reducers/user";
 import { clearGame } from "../store/reducers/game";
+import Logo from "../logo.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      "& a": { color: "black" },
+      "& a": { color: "black", textDecoration: "none" },
     },
-    appbar: { boxShadow: `inset 0 -16px 16px -16px rgba(0,0,0,0.3)` },
+    avatar: { margin: "auto 0.25rem" },
+    appbar: {
+      boxShadow: `inset 0 -16px 16px -16px rgba(0,0,0,0.3)`,
+    },
     title: {
-      alignItems: "flex-end",
-      textAlign: "right",
+      display: "flex",
+      flex: 1,
       "& a": { color: "black", textDecoration: "none" },
     },
     grid: { textAlign: "right" },
@@ -60,63 +64,59 @@ export default function MenuAppBar() {
     handleClose();
   };
   return (
-    <div className={classes.root}>
-      <AppBar
-        elevation={0}
-        color="primary"
-        position="static"
-        className={classes.appbar}
-      >
+    <AppBar
+      elevation={0}
+      color="primary"
+      position="static"
+      className={classes.appbar}
+    >
+      <Container disableGutters>
         <Toolbar>
-          <Grid xs={1} lg={2} item>
-            <Typography variant="h6" className={classes.title}>
-              <Link to="/">Pictionary</Link>
-            </Typography>
-          </Grid>
-          <Grid xs={10} lg={8} item />
-          <Grid xs={1} item>
-            {user._id ? (
-              <div>
-                <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleMenu}
-                  color="inherit"
-                >
-                  <Avatar src={user.avatar} alt={user.username!} />
-                </IconButton>
-                <Menu
-                  ref={ref}
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={open}
-                  onClose={handleClose}
-                >
-                  <Link to={`/u/${user._id}`}>
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                  </Link>
-                  {/* <MenuItem onClick={handleClose}>My account</MenuItem> */}
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                </Menu>
-              </div>
-            ) : (
-              <Link to="/login">
-                <Button color="inherit">Login</Button>
-              </Link>
-            )}
-          </Grid>
+          <Avatar src={Logo} alt="Logo" className={classes.avatar} />
+          <Typography variant="h6" className={classes.title}>
+            <Link to="/">Pictionary</Link>
+          </Typography>
+          {user._id ? (
+            <div>
+              <IconButton
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <Avatar src={user.avatar} alt={user.username!} />
+              </IconButton>
+              <Menu
+                ref={ref}
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={open}
+                onClose={handleClose}
+              >
+                <Link to={`/u/${user._id}`}>
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                </Link>
+                {/* <MenuItem onClick={handleClose}>My account</MenuItem> */}
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </div>
+          ) : (
+            <Link to="/login">
+              <Button color="inherit">Login</Button>
+            </Link>
+          )}
         </Toolbar>
-      </AppBar>
-    </div>
+      </Container>
+    </AppBar>
   );
 }

@@ -1,9 +1,9 @@
-import { Grid, Typography } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import "../styles/Intro.scss";
 
 export default function Intro() {
   return (
-    <Grid md={false} lg={6} id="intro-wrapper">
+    <div id="intro-wrapper">
       <Typography variant="h3">Pictionary</Typography>
       <Typography variant="subtitle1">
         A word-guessing game with drawings
@@ -25,6 +25,6 @@ export default function Intro() {
           <li className="intro-list">Voting for best illustrations</li>
         </ul>
       </Typography>
-    </Grid>
+    </div>
   );
 }

@@ -47,11 +47,13 @@ export const loginStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   paper: {
-    margin: theme.spacing(8, 4),
-    padding: theme.spacing(24),
+    //margin: theme.spacing(8, 4),
+    padding: theme.spacing(4),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
+    height: "80vh",
   },
   avatar: {
     width: "64px",
