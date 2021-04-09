@@ -280,7 +280,10 @@ function Whiteboard() {
               horizontal: "left",
             }}
           >
-            <div id="brush" style={{ height: "240px", padding: "2rem 1.5rem" }}>
+            <div
+              id="brush"
+              style={{ height: "330px", padding: "1rem 2rem 1rem 0.5rem" }}
+            >
               <Slider
                 id="slider"
                 value={stroke}

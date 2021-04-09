@@ -22,7 +22,8 @@ $sidebar-width: 300px;
     justify-content: flex-start;
     text-align: center;
     align-items: center;
-
+    background-color: white;
+    z-index: 10;
     #colorPalettes,
     #brush {
       z-index: 10;
