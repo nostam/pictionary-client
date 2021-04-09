@@ -9,8 +9,9 @@ $sidebar-width: 300px;
   height: calc(100vh - #{$navbar-height});
   display: flex;
   flex-direction: row;
+
   #drawingTools {
-    position: relative;
+    position: absolute;
     left: 0;
     padding: 2rem 0;
     height: 100%;
@@ -24,7 +25,6 @@ $sidebar-width: 300px;
 
     #colorPalettes,
     #brush {
-      height: 200px;
       z-index: 10;
       display: flex;
       flex-direction: column;
@@ -33,7 +33,11 @@ $sidebar-width: 300px;
       //   0 8px 16px -8px rgba(0, 0, 0, 0.3);
     }
     #brush {
-      height: 160px;
+      height: 240px;
+      padding: 2rem 1.5rem;
+      #slider {
+        margin: 0.5rem;
+      }
     }
     .drawingtoolsIcon {
       min-width: 36px;
@@ -45,7 +49,7 @@ $sidebar-width: 300px;
     }
     #colorPalettes {
       width: 48px;
-
+      height: 200px;
       #palettes {
         display: flex;
         flex-direction: row;

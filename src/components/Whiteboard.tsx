@@ -49,9 +49,7 @@ function Whiteboard() {
   // Drawing
 
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
-  // const [mouseCoordinates, setMouseCoordinates] = useState<
-  //   Coordinate | undefined
-  // >();
+  // const [mouseCoordinates, setMouseCoordinates] = useState<Coordinate[]>([]);
   const [logs, setLogs] = useState<IRoomChat[]>([]);
   const [msg, setMsg] = useState<IRoomChat>({
     from: user!.username,
@@ -104,15 +102,13 @@ function Whiteboard() {
 
   function startDrawing(e: MouseEvent) {
     if (!isAuthor) return;
-    const { offsetX, offsetY } = e;
     setIsDrawing(true);
     contextRef.current!.beginPath();
-    contextRef.current!.moveTo(offsetX, offsetY);
+    contextRef.current!.moveTo(e.offsetX, e.offsetY);
   }
   function finishDrawing(e: MouseEvent) {
     if (!isAuthor) return;
-    const { offsetX, offsetY } = e;
-    contextRef.current!.lineTo(offsetX, offsetY);
+    contextRef.current!.lineTo(e.offsetX, e.offsetY);
     contextRef.current!.stroke();
     contextRef.current!.closePath();
     setIsDrawing(false);
@@ -122,10 +118,10 @@ function Whiteboard() {
   }
   function draw(e: MouseEvent) {
     if (!isAuthor || !isDrawing) return;
-    const { offsetX, offsetY } = e;
-    contextRef.current!.lineTo(offsetX, offsetY);
+    contextRef.current!.lineTo(e.offsetX, e.offsetY);
     contextRef.current!.stroke();
   }
+
   const handleClickPen = (e: React.MouseEvent<HTMLDivElement>) =>
     setShowBrush(e.currentTarget);
 
@@ -284,8 +280,9 @@ function Whiteboard() {
               horizontal: "left",
             }}
           >
-            <div id="brush">
+            <div id="brush" style={{ height: "240px", padding: "2rem 1.5rem" }}>
               <Slider
+                id="slider"
                 value={stroke}
                 getAriaValueText={valuetext}
                 aria-labelledby="discrete-slider-custom"
