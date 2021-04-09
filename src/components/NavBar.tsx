@@ -20,18 +20,15 @@ import Logo from "../logo.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      flexGrow: 1,
-      "& a": { color: "black", textDecoration: "none" },
-    },
     avatar: { margin: "auto 0.25rem" },
     appbar: {
       boxShadow: `inset 0 -16px 16px -16px rgba(0,0,0,0.3)`,
+      "& a": { color: "black", textDecoration: "none" },
+      "& a:visited": { color: "black", textDecoration: "none" },
     },
     title: {
       display: "flex",
       flex: 1,
-      "& a": { color: "black", textDecoration: "none" },
     },
     grid: { textAlign: "right" },
   })
