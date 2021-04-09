@@ -110,7 +110,7 @@ export default function MenuAppBar() {
                 </Menu>
               </div>
             ) : (
-              <Link to="login">
+              <Link to="/login">
                 <Button color="inherit">Login</Button>
               </Link>
             )}
