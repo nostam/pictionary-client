@@ -145,7 +145,6 @@ function Whiteboard() {
   // Status update
   const updateStatus = useCallback(
     (status = "started") => {
-      socket.emit("");
       socket.emit("gameStatus", {
         from: socket.id,
         room,
@@ -253,11 +252,12 @@ function Whiteboard() {
     setMsg({ ...msg, message: "" });
   }
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
-    if (!isAuthor) setMsg({ ...msg, message: e.target.value });
+    if (!isAuthor || game.status === "waiting")
+      setMsg({ ...msg, message: e.target.value });
   }
   function handleInputMsg(e: React.KeyboardEvent<HTMLInputElement>) {
     e.preventDefault();
-    if (e.key === "Enter" && !isAuthor) {
+    if (e.key === "Enter") {
       sendMsg();
     }
   }

@@ -1,0 +1,25 @@
+#user-wrapper {
+  background-color: #3b3d54;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  padding: 2rem;
+  justify-content: center;
+  #user-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    #user-avatar,
+    #userstat {
+      margin: 0 2rem;
+    }
+    #user-avatar {
+      border-radius: 50%;
+    }
+    .userinfo {
+      align-items: center;
+      margin: 2rem 0;
+    }
+  }
+}
