@@ -1,5 +1,6 @@
 import { Grid, Paper, Typography } from "@material-ui/core";
 import { useAppSelector } from "../utils/hooks";
+import ColorPicker from "../components/ColorPicker";
 import "../styles/User.scss";
 
 export default function User() {
@@ -17,6 +18,7 @@ export default function User() {
               variant="h6"
               id="userstat"
             >{`Total Points : ${user.point}`}</Typography>
+            <ColorPicker color="#ff0000" />
           </Paper>
         </Grid>
       </Grid>
