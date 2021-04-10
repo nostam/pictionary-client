@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import fetchAuth from "../utils/fetch";
 import { useAppSelector, useAppDispatch } from "../utils/hooks";
-import { clearUser } from "../store/reducers/user";
+import { clearUser, setCurrentUser } from "../store/reducers/user";
 import { clearGame } from "../store/reducers/game";
 import Logo from "../logo.svg";
 
@@ -60,6 +60,20 @@ export default function MenuAppBar() {
     }
     handleClose();
   };
+
+  React.useEffect(() => {
+    const rmb = document.cookie.indexOf("rmb") !== -1;
+    async function fetchMe() {
+      try {
+        const res = await fetchAuth.get("/users/me");
+        if (res.status === 200) dispatch(setCurrentUser(res.data));
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
+    if (rmb) fetchMe();
+  }, [dispatch]);
+
   return (
     <AppBar
       elevation={0}
