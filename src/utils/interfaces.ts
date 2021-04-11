@@ -18,7 +18,6 @@ export interface IRoom {
   modifiedAt?: Date;
   status?: string;
   round?: number;
-  color?: string;
 }
 export interface IUser {
   _id?: string;
@@ -36,6 +35,7 @@ export interface IUser {
   createdAt?: string;
   modifiedAt?: string;
   point?: number;
+  color?: IPalette;
 }
 export interface IPlayers {
   round: number;
@@ -85,4 +85,8 @@ export interface IRegisterData {
   username?: string;
   password?: string;
   email?: string;
+}
+export interface IPalette {
+  primary: string;
+  secondary: string;
 }

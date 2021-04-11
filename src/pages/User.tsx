@@ -1,9 +1,16 @@
 import { Grid, Paper, Typography } from "@material-ui/core";
 import { useAppSelector } from "../utils/hooks";
 import ColorPicker from "../components/ColorPicker";
+import { IPalette } from "../utils/interfaces";
+import { useTheme } from "@material-ui/core/styles";
 import "../styles/User.scss";
 
 export default function User() {
+  const theme = useTheme();
+  const color: IPalette = {
+    primary: theme.palette.primary.main,
+    secondary: theme.palette.secondary.main,
+  };
   const { user } = useAppSelector((state) => state.user);
 
   return (
@@ -19,7 +26,22 @@ export default function User() {
               variant="h6"
               id="userstat"
             >{`Total Points : ${user.point}`}</Typography>
-            <ColorPicker color="#ff0000" />
+            <Grid
+              xs={3}
+              justify="space-evenly"
+              direction="row"
+              container
+              style={{ margin: "1rem 0 1rem 0.5rem" }}
+            >
+              <>
+                <Typography variant="subtitle1">Primary color: </Typography>
+                <ColorPicker color={color.primary} value="primary" />
+              </>
+              <>
+                {/* <Typography variant="subtitle1">Secondary color: </Typography>
+                <ColorPicker color={color.secondary} value="sceondary" /> */}
+              </>
+            </Grid>
           </Paper>
         </Grid>
       </Grid>

@@ -1,6 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+  ThemeProvider,
+  createMuiTheme,
+} from "@material-ui/core/styles";
 import {
   Snackbar,
   AppBar,
@@ -51,7 +58,8 @@ export default function MenuAppBar() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const ref = React.createRef<HTMLDivElement>();
-
+  const theme = useTheme();
+  let customTheme = theme;
   // User
   const { user } = useAppSelector((state) => state.user);
   const handleLogout = async () => {
@@ -64,6 +72,13 @@ export default function MenuAppBar() {
     }
     handleClose();
   };
+
+  // Theme
+  React.useEffect(() => {
+    if (user.color !== undefined) {
+      customTheme.palette.primary.main = user.color.primary;
+    }
+  }, [user, customTheme]);
 
   // Menu
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -110,74 +125,76 @@ export default function MenuAppBar() {
   }, [dispatch]);
 
   return (
-    <AppBar
-      elevation={0}
-      color="primary"
-      position="static"
-      className={classes.appbar}
-    >
-      <Container disableGutters>
-        <Toolbar className={classes.toolbar}>
-          <div className={classes.left}>
-            <Avatar src={Logo} alt="Logo" className={classes.avatar} />
-            <Typography variant="h6">
-              <Link to="/">Pictionary</Link>
-            </Typography>
-          </div>
-          <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            open={show}
-            onClose={handleSnackbarClose}
-            key={word}
-            style={{ transform: "translate(-50%, 40%)" }}
-          >
-            <div className={classes.topic}>
-              <span>Draw: {word}</span>
+    <ThemeProvider theme={createMuiTheme(customTheme)}>
+      <AppBar
+        elevation={0}
+        color="primary"
+        position="static"
+        className={classes.appbar}
+      >
+        <Container disableGutters>
+          <Toolbar className={classes.toolbar}>
+            <div className={classes.left}>
+              <Avatar src={Logo} alt="Logo" className={classes.avatar} />
+              <Typography variant="h6">
+                <Link to="/">Pictionary</Link>
+              </Typography>
             </div>
-          </Snackbar>
-          {user._id ? (
-            <div>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <Avatar src={user.avatar} alt={user.username!} />
-              </IconButton>
-              <Menu
-                ref={ref}
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={open}
-                onClose={handleClose}
-                className={classes.menu}
-              >
-                <MenuItem onClick={handleClose}>
-                  <Link to={`/u/${user._id}`}>Profile</Link>
-                </MenuItem>
+            <Snackbar
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              open={show}
+              onClose={handleSnackbarClose}
+              key={word}
+              style={{ transform: "translate(-50%, 40%)" }}
+            >
+              <div className={classes.topic}>
+                <span>Draw: {word}</span>
+              </div>
+            </Snackbar>
+            {user._id ? (
+              <div>
+                <IconButton
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <Avatar src={user.avatar} alt={user.username!} />
+                </IconButton>
+                <Menu
+                  ref={ref}
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={open}
+                  onClose={handleClose}
+                  className={classes.menu}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <Link to={`/u/${user._id}`}>Profile</Link>
+                  </MenuItem>
 
-                {/* <MenuItem onClick={handleClose}>My account</MenuItem> */}
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </Menu>
-            </div>
-          ) : (
-            <Link to="/login">
-              <Button color="inherit">Login</Button>
-            </Link>
-          )}
-        </Toolbar>
-      </Container>
-    </AppBar>
+                  {/* <MenuItem onClick={handleClose}>My account</MenuItem> */}
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
+              </div>
+            ) : (
+              <Link to="/login">
+                <Button color="inherit">Login</Button>
+              </Link>
+            )}
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </ThemeProvider>
   );
 }

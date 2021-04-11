@@ -1,23 +1,16 @@
 import React from "react";
 import { Popover } from "@material-ui/core";
-import { SketchPicker } from "react-color";
-
+import { ChromePicker, ColorResult } from "react-color";
+import { useAppDispatch } from "../utils/hooks";
+import { setCurrentUser } from "../store/reducers/user";
 import "../styles/ColorPicker.scss";
 interface IProps {
   color: string;
+  value: string;
 }
 
-// const useStyles = makeStyles((color) => ({
-//   colorSample: {
-//     height: "48px",
-//     width: "48px",
-//     outline: "1px solid rgba(0,0,0,0.25)",
-//     borderRadius: "50%",
-//   },
-// }));
-
-export default function ColorPicker({ color }: IProps) {
-  // const classes = useStyles(color);
+export default function ColorPicker({ color, value }: IProps) {
+  const dispatch = useAppDispatch();
   const [bgColor, setBgColor] = React.useState(color);
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
 
@@ -28,7 +21,10 @@ export default function ColorPicker({ color }: IProps) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleColorPick = (c: ColorResult) => {
+    dispatch(setCurrentUser({ color: { [value]: c.hex } }));
+    setBgColor(c.hex!);
+  };
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
@@ -39,13 +35,6 @@ export default function ColorPicker({ color }: IProps) {
         onClick={handleClick}
         style={{ backgroundColor: bgColor }}
       />
-      <SketchPicker
-        color={bgColor}
-        onChangeComplete={(c) => {
-          setBgColor(c.hex!);
-        }}
-      />
-
       <Popover
         id={id}
         open={open}
@@ -60,7 +49,7 @@ export default function ColorPicker({ color }: IProps) {
           horizontal: "center",
         }}
       >
-        The content of the Popover.
+        <ChromePicker color={bgColor} onChange={handleColorPick} />
       </Popover>
     </div>
   );
