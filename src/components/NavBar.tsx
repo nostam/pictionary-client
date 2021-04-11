@@ -58,8 +58,7 @@ export default function MenuAppBar() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const ref = React.createRef<HTMLDivElement>();
-  const theme = useTheme();
-  let customTheme = theme;
+
   // User
   const { user } = useAppSelector((state) => state.user);
   const handleLogout = async () => {
@@ -74,6 +73,8 @@ export default function MenuAppBar() {
   };
 
   // Theme
+  const theme = useTheme();
+  let customTheme = theme;
   React.useEffect(() => {
     if (user.color !== undefined) {
       customTheme.palette.primary.main = user.color.primary;
