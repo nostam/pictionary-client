@@ -47,10 +47,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// export interface State extends SnackbarOrigin {
-//   show: boolean;
-// }
-
 export default function MenuAppBar() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
@@ -96,9 +92,7 @@ export default function MenuAppBar() {
     }
   }, [game, user]);
 
-  // const { vertical, horizontal, show } = state;
   const handleSnackbarClose = () => {
-    // setState({ ...state, show: false });
     setShow(false);
   };
 
@@ -135,6 +129,7 @@ export default function MenuAppBar() {
             open={show}
             onClose={handleSnackbarClose}
             key={word}
+            style={{ transform: "translate(-50%, 40%)" }}
           >
             <div className={classes.topic}>
               <span>Draw: {word}</span>

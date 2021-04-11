@@ -44,7 +44,7 @@ function Whiteboard() {
   timerRef.current = timer;
 
   // Topic
-  const [word, setWord] = useState<string>("");
+  // const [word, setWord] = useState<string>("");
   const [initNextRound, setInitNextRound] = useState<boolean>(false);
   // Drawing
 
@@ -205,7 +205,7 @@ function Whiteboard() {
   const startNextRound = useCallback(() => {
     setMsg({ ...msg, round: game.round! + 1 });
     dispatch(updateGame({ round: game.round! + 1 }));
-    setWord(game.words![game.round!]);
+    // setWord(game.words![game.round!]);
     setInitNextRound(false);
     setTimer(180);
     if (game.status === "started" && isGameCompleted()) gameIsCompleted();
@@ -213,7 +213,7 @@ function Whiteboard() {
 
   useEffect(() => {
     if (game.status === "started") {
-      setWord(game.words![game.round!]);
+      // setWord(game.words![game.round!]);
       if (timer && !isGameCompleted()) {
         const intervalId = setTimeout(() => {
           setTimer(timer - 1);
