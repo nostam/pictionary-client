@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import {
+  Snackbar,
   AppBar,
   Toolbar,
   MenuItem,
@@ -26,30 +27,37 @@ const useStyles = makeStyles((theme: Theme) =>
       "& a": { color: "black", textDecoration: "none" },
       "& a:visited": { color: "black", textDecoration: "none" },
     },
-    title: {
-      display: "flex",
-      flex: 1,
+    toolbar: { justifyContent: "space-between" },
+    menu: {
+      color: "black",
+      "& a": { color: "black", textDecoration: "none" },
+      "& a:visited": { color: "black", textDecoration: "none" },
     },
+    left: { display: "flex", alignItems: "center" },
     grid: { textAlign: "right" },
+    topic: {
+      padding: "0.25rem 2.5rem",
+      margin: "0 auto",
+      color: "black",
+      backgroundColor: "white",
+      boxShadow: "0 4px 4px rgba(0,0,0,0.25)",
+      fontSize: "1.5rem",
+      fontWeight: "bold",
+    },
   })
 );
 
+// export interface State extends SnackbarOrigin {
+//   show: boolean;
+// }
+
 export default function MenuAppBar() {
   const classes = useStyles();
-  const { user } = useAppSelector((state) => state.user);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const ref = React.createRef<HTMLDivElement>();
   const dispatch = useAppDispatch();
+  const ref = React.createRef<HTMLDivElement>();
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
+  // User
+  const { user } = useAppSelector((state) => state.user);
   const handleLogout = async () => {
     try {
       await fetchAuth.post("/users/logout");
@@ -59,6 +67,39 @@ export default function MenuAppBar() {
       console.log(error);
     }
     handleClose();
+  };
+
+  // Menu
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  // Topic
+  const { game } = useAppSelector((state) => state.current);
+  const [word, setWord] = React.useState<string>("");
+  const [show, setShow] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    if (
+      game.status === "started" &&
+      game.draw![game.round!].users.some((u) => u.username === user.username)
+    ) {
+      setWord(game.words![game.round!]);
+      setShow(true);
+    } else {
+      setWord("");
+      setShow(false);
+    }
+  }, [game, user]);
+
+  // const { vertical, horizontal, show } = state;
+  const handleSnackbarClose = () => {
+    // setState({ ...state, show: false });
+    setShow(false);
   };
 
   React.useEffect(() => {
@@ -82,11 +123,23 @@ export default function MenuAppBar() {
       className={classes.appbar}
     >
       <Container disableGutters>
-        <Toolbar>
-          <Avatar src={Logo} alt="Logo" className={classes.avatar} />
-          <Typography variant="h6" className={classes.title}>
-            <Link to="/">Pictionary</Link>
-          </Typography>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.left}>
+            <Avatar src={Logo} alt="Logo" className={classes.avatar} />
+            <Typography variant="h6">
+              <Link to="/">Pictionary</Link>
+            </Typography>
+          </div>
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            open={show}
+            onClose={handleSnackbarClose}
+            key={word}
+          >
+            <div className={classes.topic}>
+              <span>Draw: {word}</span>
+            </div>
+          </Snackbar>
           {user._id ? (
             <div>
               <IconButton
@@ -113,10 +166,12 @@ export default function MenuAppBar() {
                 }}
                 open={open}
                 onClose={handleClose}
+                className={classes.menu}
               >
-                <Link to={`/u/${user._id}`}>
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
-                </Link>
+                <MenuItem onClick={handleClose}>
+                  <Link to={`/u/${user._id}`}>Profile</Link>
+                </MenuItem>
+
                 {/* <MenuItem onClick={handleClose}>My account</MenuItem> */}
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>

@@ -66,7 +66,7 @@ function Whiteboard() {
 
   useEffect(() => {
     const width = window.innerWidth - 48; // drawing tools
-    const height = window.innerHeight - 164; // navbar height + word topic
+    const height = window.innerHeight - 64; // navbar height + word topic
     const canvas = canvasRef.current!;
     canvas.width = width;
     canvas.height = height;
@@ -189,8 +189,8 @@ function Whiteboard() {
       game.draw![game.round!] !== undefined
     ) {
       game.guess![game.round!].users.some((u) => u.username === user.username)
-        ? setIsAuthor(true)
-        : setIsAuthor(false);
+        ? setIsAuthor(false)
+        : setIsAuthor(true);
     } else {
       game.status === "ended" ? setIsAuthor(false) : setIsAuthor(true);
     }
@@ -350,7 +350,7 @@ function Whiteboard() {
           onMouseUp={(e) => finishDrawing(e.nativeEvent)}
           onMouseMove={(e) => draw(e.nativeEvent)}
         />
-        <div
+        {/* <div
           id="word"
           style={{
             visibility:
@@ -358,7 +358,7 @@ function Whiteboard() {
           }}
         >
           <h1>Draw: {word}</h1>
-        </div>
+        </div> */}
       </div>
       <div id="sidebar">
         <div id="status">

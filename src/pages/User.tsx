@@ -5,6 +5,7 @@ import "../styles/User.scss";
 
 export default function User() {
   const { user } = useAppSelector((state) => state.user);
+
   return (
     <div id="user-wrapper">
       <Grid container direction="row" justify="center">
