@@ -20,9 +20,9 @@ export default function Intro() {
           <li className="intro-list">
             Points - Player who drew or guessed correctly
           </li>
-          <li className="intro-list">Ranking</li>
+          {/* <li className="intro-list">Ranking</li> */}
           <li className="intro-list">Customize site theme color</li>
-          <li className="intro-list">Voting for best illustrations</li>
+          {/* <li className="intro-list">Voting for best illustrations</li> */}
         </ul>
       </Typography>
     </div>
