@@ -73,8 +73,7 @@ export default function MenuAppBar() {
   };
 
   // Theme
-  const theme = useTheme();
-  let customTheme = theme;
+  let customTheme = useTheme();
   React.useEffect(() => {
     if (user.color !== undefined) {
       customTheme.palette.primary.main = user.color.primary;
