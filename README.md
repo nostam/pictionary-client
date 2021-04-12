@@ -1,7 +1,7 @@
 # Getting Started with Create React App
 
 A pictionary word game using typescript and react, inspired by [おえかきの森][0][^][1].
-![](https://res.cloudinary.com/dnii0enil/video/upload/ac_none,c_scale,e_accelerate:100,q_auto:good,w_1280/v1618255457/demo/2021-04-12_21-15-10_v7fs9u.gif)
+![demo](https://res.cloudinary.com/dnii0enil/video/upload/ac_none,c_scale,e_accelerate:100,q_auto:good,w_720/a_0/v1618255457/demo/2021-04-12_21-15-10_v7fs9u.gif)
 Favicon is provided by [ReactiveDoodles App][2]
 
 #### Future Development
