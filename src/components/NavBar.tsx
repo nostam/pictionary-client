@@ -62,6 +62,7 @@ export default function MenuAppBar() {
 
   // User
   const { user } = useAppSelector((state) => state.user);
+  const usernameRef = React.useRef<string>();
   const handleLogout = async () => {
     try {
       const res = await fetchAuth.post("/users/logout");
@@ -114,7 +115,8 @@ export default function MenuAppBar() {
   // };
 
   React.useEffect(() => {
-    const rmb = user._id ? document.cookie.indexOf("rmb") !== -1 : false;
+    usernameRef.current = user.username;
+    const rmb = document.cookie.indexOf("rmb") !== -1;
     async function fetchMe() {
       try {
         const res = await fetchAuth.get("/users/me");
@@ -123,8 +125,8 @@ export default function MenuAppBar() {
         console.log(error.message);
       }
     }
-    if (rmb) fetchMe();
-  }, [dispatch, user._id]);
+    if (usernameRef.current !== user.username || rmb) fetchMe();
+  }, [dispatch, user.username]);
 
   return (
     <ThemeProvider theme={createMuiTheme(customTheme)}>

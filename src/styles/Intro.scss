@@ -36,7 +36,10 @@
   }
   .user-box {
     text-align: left;
-    margin: 2rem;
+    padding: 2rem;
+    &:first-of-type {
+      border-right: "1px dotted white";
+    }
   }
   .intro-list-yes {
     list-style: "✔ ";

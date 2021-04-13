@@ -61,12 +61,9 @@ export default function Intro() {
         </div>
       </Modal>
       <div className="row" style={{ marginTop: "2rem" }}>
-        <div
-          className="col user-box"
-          style={{ borderRight: "1px dotted white" }}
-        >
+        <div className="col user-box">
           <Typography variant="body1">Register Player:</Typography>
-          <ul>
+          <ul style={{ paddingLeft: "1rem" }}>
             <li className="intro-list-yes">Create game room and participate</li>
             <li className="intro-list-yes">
               Points - Player who drew or guessed correctly
@@ -78,7 +75,7 @@ export default function Intro() {
         </div>
         <div className="col user-box">
           <Typography variant="body1">Anonymous Player:</Typography>
-          <ul>
+          <ul style={{ paddingLeft: "1rem" }}>
             <li className="intro-list-yes">Create game room and participate</li>
             <li className="intro-list-no">
               Points - Player who drew or guessed correctly
