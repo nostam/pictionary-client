@@ -26,22 +26,14 @@ export default function User() {
               variant="h6"
               id="userstat"
             >{`Total Points : ${user.point}`}</Typography>
-            <Grid
-              item
-              xs={3}
-              justify="space-evenly"
-              direction="row"
-              container
-              style={{ margin: "1rem 0 1rem 0.5rem" }}
-            >
-              <>
+            <Grid item xs={3} style={{ margin: "1rem" }}>
+              <div className="row user-color">
                 <Typography variant="subtitle1">Primary color: </Typography>
                 <ColorPicker color={color.primary} value="primary" />
-              </>
-              <>
-                {/* <Typography variant="subtitle1">Secondary color: </Typography>
-                <ColorPicker color={color.secondary} value="sceondary" /> */}
-              </>
+              </div>
+              {/*<div>
+                <Typography variant="subtitle1">Secondary color: </Typography>
+                <ColorPicker color={color.secondary} value="sceondary" /> </div>*/}
             </Grid>
           </Paper>
         </Grid>
