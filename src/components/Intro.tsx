@@ -9,25 +9,13 @@ export default function Intro() {
         A word-guessing game with drawings
       </Typography>
       <br />
-      <div id="intro-video">
-        {/* <Video publicId="demo/2021-04-12_21-15-10_v7fs9u">
-          <Transformation
-            audioCodec="none"
-            background="auto"
-            effect="accelerate:100"
-            quality="auto:good"
-            width="1280"
-            crop="scale"
-          />
-        </Video> */}
-
-        <video
-          style={{ display: "block" }}
-          width="100%"
-          autoPlay
-          src="https://res.cloudinary.com/dnii0enil/video/upload/ac_none,c_scale,e_accelerate:100,q_auto:good,w_1280/v1618255457/demo/2021-04-12_21-15-10_v7fs9u.mp4"
-        />
-      </div>
+      <video
+        id="intro-video"
+        width="100%"
+        autoPlay
+        loop
+        src="https://res.cloudinary.com/dnii0enil/video/upload/ac_none,c_scale,e_accelerate:100,q_auto:good,w_1280/v1618255457/demo/2021-04-12_21-15-10_v7fs9u.mp4"
+      />
       <Typography variant="h6">
         Everyone can join and play without any regisration
       </Typography>

@@ -11,7 +11,7 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: "Lexend, sans-serif",
+    fontFamily: "Comfortaa, sans-serif",
   },
   overrides: {
     MuiTextField: {
