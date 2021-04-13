@@ -138,7 +138,7 @@ export default function MenuAppBar() {
             <div className={classes.left}>
               <Avatar src={Logo} alt="Logo" className={classes.avatar} />
               <Typography variant="h6">
-                <Link to="/">Pictionary</Link>
+                <Link to="/home">Pictionary</Link>
               </Typography>
             </div>
             <Snackbar
