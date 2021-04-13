@@ -10,6 +10,9 @@ const theme = createMuiTheme({
       main: "#f50057",
     },
   },
+  typography: {
+    fontFamily: "Lexend, sans-serif",
+  },
   overrides: {
     MuiTextField: {
       root: {
