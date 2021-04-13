@@ -77,7 +77,7 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    if (success) history.push("/");
+    if (success) history.push("/home");
   }, [success, history]);
 
   return (
@@ -92,7 +92,7 @@ export default function Login() {
           <Avatar
             className={classes.avatar}
             src={Logo}
-            onClick={() => history.push("/")}
+            onClick={() => history.push("/home")}
           />
 
           <Typography component="h1" variant="h5">

@@ -66,6 +66,7 @@ export default function MenuAppBar() {
       await fetchAuth.post("/users/logout");
       dispatch(clearUser());
       dispatch(clearGame());
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }

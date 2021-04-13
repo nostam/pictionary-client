@@ -16,6 +16,7 @@ code {
 .row {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 .col {
   display: flex;

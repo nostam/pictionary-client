@@ -134,7 +134,7 @@ function Whiteboard() {
       if (res.status === 200) dispatch(updateGame(res.data));
     } catch (error) {
       dispatch(updateError("Room has expired or does not exist."));
-      history.push("/");
+      history.push("/home");
     }
   }, [dispatch, history]);
 

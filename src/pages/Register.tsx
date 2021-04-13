@@ -93,7 +93,7 @@ export default function Register() {
           <Avatar
             className={classes.avatar}
             src={Logo}
-            onClick={() => history.push("/")}
+            onClick={() => history.push("/home")}
           />
 
           <Typography component="h1" variant="h5">

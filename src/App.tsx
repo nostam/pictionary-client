@@ -19,12 +19,16 @@ function App() {
         <>
           <CssBaseline />
           <BrowserRouter>
-            <Route path={["/", "/r/:id", "/u/:id"]} exact component={NavBar} />
-            <Route path="/login" component={Login} />
+            <Route
+              path={["/home", "/r/:id", "/u/:id"]}
+              exact
+              component={NavBar}
+            />
+            <Route path={["/", "/login"]} exact component={Login} />
             <Route path="/register" component={Register} />
             <Route path="/r/:id" component={Room} />
             <Route path="/u/:id" component={User} />
-            <Route path="/" exact component={Home} />
+            <Route path="/home" exact component={Home} />
           </BrowserRouter>
         </>
       </ThemeProvider>
