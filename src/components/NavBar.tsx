@@ -62,7 +62,6 @@ export default function MenuAppBar() {
 
   // User
   const { user } = useAppSelector((state) => state.user);
-  const usernameRef = React.useRef<string>();
   const handleLogout = async () => {
     try {
       const res = await fetchAuth.post("/users/logout");
