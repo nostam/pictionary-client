@@ -64,10 +64,10 @@ export default function MenuAppBar() {
   const { user } = useAppSelector((state) => state.user);
   const handleLogout = async () => {
     try {
-      await fetchAuth.post("/users/logout");
+      const res = await fetchAuth.post("/users/logout");
       dispatch(clearUser());
       dispatch(clearGame());
-      window.location.reload();
+      if (res) window.location.reload();
     } catch (error) {
       console.log(error);
     }
