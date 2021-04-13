@@ -122,8 +122,8 @@ export default function MenuAppBar() {
         console.log(error.message);
       }
     }
-    if (rmb) fetchMe();
-  }, [dispatch]);
+    if (user.username || rmb) fetchMe();
+  }, [dispatch, user.username]);
 
   return (
     <ThemeProvider theme={createMuiTheme(customTheme)}>
