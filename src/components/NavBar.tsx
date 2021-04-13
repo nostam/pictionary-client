@@ -144,7 +144,6 @@ export default function MenuAppBar() {
             <Snackbar
               anchorOrigin={{ vertical: "top", horizontal: "center" }}
               open={show}
-              onClose={handleSnackbarClose}
               key={word}
               style={{ transform: "translate(-50%, 40%)" }}
             >
