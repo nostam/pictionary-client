@@ -14,6 +14,7 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { useAppDispatch } from "../utils/hooks";
 import { difficulties, gamemode } from "../utils/constants";
 import { updateGame } from "../store/reducers/game";
+import ColorLuminance from "../utils/color";
 
 function getModalStyle() {
   const top = 50;
@@ -47,6 +48,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     button: {
       margin: theme.spacing(1),
+      "&:hover": {
+        backgroundColor: ColorLuminance(
+          theme.palette.primary.main.toString(),
+          -0.35
+        ),
+      },
     },
     selectEmpty: {
       marginTop: theme.spacing(2),
