@@ -114,7 +114,7 @@ export default function MenuAppBar() {
   // };
 
   React.useEffect(() => {
-    const rmb = user.username ? document.cookie.indexOf("rmb") !== -1 : false;
+    const rmb = user._id ? document.cookie.indexOf("rmb") !== -1 : false;
     async function fetchMe() {
       try {
         const res = await fetchAuth.get("/users/me");
@@ -124,7 +124,7 @@ export default function MenuAppBar() {
       }
     }
     if (rmb) fetchMe();
-  }, [dispatch, user.username]);
+  }, [dispatch, user._id]);
 
   return (
     <ThemeProvider theme={createMuiTheme(customTheme)}>
