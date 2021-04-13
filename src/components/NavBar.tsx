@@ -114,7 +114,7 @@ export default function MenuAppBar() {
   // };
 
   React.useEffect(() => {
-    const rmb = document.cookie.indexOf("rmb") !== -1;
+    const rmb = user.username ? document.cookie.indexOf("rmb") !== -1 : false;
     async function fetchMe() {
       try {
         const res = await fetchAuth.get("/users/me");

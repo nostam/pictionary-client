@@ -350,15 +350,6 @@ function Whiteboard() {
           onMouseUp={(e) => finishDrawing(e.nativeEvent)}
           onMouseMove={(e) => draw(e.nativeEvent)}
         />
-        {/* <div
-          id="word"
-          style={{
-            visibility:
-              isAuthor && game.status === "started" ? "visible" : "hidden",
-          }}
-        >
-          <h1>Draw: {word}</h1>
-        </div> */}
       </div>
       <div id="sidebar">
         <div id="status">
