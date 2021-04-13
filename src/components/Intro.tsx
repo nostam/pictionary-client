@@ -61,37 +61,32 @@ export default function Intro() {
         </div>
       </Modal>
       <div className="row" style={{ marginTop: "2rem" }}>
-        <div className="col" style={{ borderRight: "1px dotted white" }}>
-          <Typography variant="body1" className="user-box">
-            Register Player:
-            <ul>
-              <li className="intro-list-yes">
-                Create game room and participate
-              </li>
-              <li className="intro-list-yes">
-                Points - Player who drew or guessed correctly
-              </li>
-              <li className="intro-list-yes">Ranking</li>
-              <li className="intro-list-yes">Customize site theme color</li>
-              {/* <li className="intro-list-yes">Voting for best illustrations</li> */}
-            </ul>
-          </Typography>
+        <div
+          className="col user-box"
+          style={{ borderRight: "1px dotted white" }}
+        >
+          <Typography variant="body1">Register Player:</Typography>
+          <ul>
+            <li className="intro-list-yes">Create game room and participate</li>
+            <li className="intro-list-yes">
+              Points - Player who drew or guessed correctly
+            </li>
+            <li className="intro-list-yes">Ranking</li>
+            <li className="intro-list-yes">Customize site theme color</li>
+            {/* <li className="intro-list-yes">Voting for best illustrations</li> */}
+          </ul>
         </div>
-        <div className="col">
-          <Typography variant="body1" className="user-box">
-            Anonymous Player:
-            <ul>
-              <li className="intro-list-yes">
-                Create game room and participate
-              </li>
-              <li className="intro-list-no">
-                Points - Player who drew or guessed correctly
-              </li>
-              <li className="intro-list-no">Ranking</li>
-              <li className="intro-list-no">Customize site theme color</li>
-              {/* <li className="intro-list">Voting for best illustrations</li> */}
-            </ul>
-          </Typography>
+        <div className="col user-box">
+          <Typography variant="body1">Anonymous Player:</Typography>
+          <ul>
+            <li className="intro-list-yes">Create game room and participate</li>
+            <li className="intro-list-no">
+              Points - Player who drew or guessed correctly
+            </li>
+            <li className="intro-list-no">Ranking</li>
+            <li className="intro-list-no">Customize site theme color</li>
+            {/* <li className="intro-list">Voting for best illustrations</li> */}
+          </ul>
         </div>
       </div>
     </div>

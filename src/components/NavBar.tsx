@@ -58,6 +58,7 @@ export default function MenuAppBar() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const ref = React.createRef<HTMLDivElement>();
+  const SnackRef = React.createRef<HTMLDivElement>();
 
   // User
   const { user } = useAppSelector((state) => state.user);
@@ -122,7 +123,7 @@ export default function MenuAppBar() {
         console.log(error.message);
       }
     }
-    if (user.username || rmb) fetchMe();
+    if (rmb) fetchMe();
   }, [dispatch, user.username]);
 
   return (
@@ -141,16 +142,18 @@ export default function MenuAppBar() {
                 <Link to="/home">Pictionary</Link>
               </Typography>
             </div>
-            <Snackbar
-              anchorOrigin={{ vertical: "top", horizontal: "center" }}
-              open={show}
-              key={word}
-              style={{ transform: "translate(-50%, 40%)" }}
-            >
-              <div className={classes.topic}>
-                <span>Draw: {word}</span>
-              </div>
-            </Snackbar>
+            <div ref={SnackRef}>
+              <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                open={show}
+                key={word}
+                style={{ transform: "translate(-50%, 40%)" }}
+              >
+                <div className={classes.topic}>
+                  <span>Draw: {word}</span>
+                </div>
+              </Snackbar>
+            </div>
             {user._id ? (
               <div>
                 <IconButton

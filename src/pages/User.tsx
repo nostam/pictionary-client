@@ -27,6 +27,7 @@ export default function User() {
               id="userstat"
             >{`Total Points : ${user.point}`}</Typography>
             <Grid
+              item
               xs={3}
               justify="space-evenly"
               direction="row"
