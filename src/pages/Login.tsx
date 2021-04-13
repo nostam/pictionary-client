@@ -56,6 +56,7 @@ export default function Login() {
         setLoading(true);
         const res = await fetchAuth.post("/users/login", input);
         if (res.status === 200) {
+          if (res.data.rmb) localStorage.setItem("rmb", res.data.rmb);
           dispatch(setCurrentUser(res.data.user));
           timer.current = window.setTimeout(() => {
             setSuccess(true);
