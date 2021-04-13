@@ -108,9 +108,9 @@ export default function MenuAppBar() {
     }
   }, [game, user]);
 
-  const handleSnackbarClose = () => {
-    setShow(false);
-  };
+  // const handleSnackbarClose = () => {
+  //   setShow(false);
+  // };
 
   React.useEffect(() => {
     const rmb = document.cookie.indexOf("rmb") !== -1;
