@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   createStyles,
   makeStyles,
@@ -59,7 +59,7 @@ export default function MenuAppBar() {
   const dispatch = useAppDispatch();
   const ref = React.createRef<HTMLDivElement>();
   const SnackRef = React.createRef<HTMLDivElement>();
-
+  const location = useLocation();
   // User
   const { user } = useAppSelector((state) => state.user);
   const handleLogout = async () => {
@@ -143,16 +143,18 @@ export default function MenuAppBar() {
               </Typography>
             </div>
             <div ref={SnackRef}>
-              <Snackbar
-                anchorOrigin={{ vertical: "top", horizontal: "center" }}
-                open={show}
-                key={word}
-                style={{ transform: "translate(-50%, 40%)" }}
-              >
-                <div className={classes.topic}>
-                  <span>Draw: {word}</span>
-                </div>
-              </Snackbar>
+              {location.pathname.includes("/r/") && (
+                <Snackbar
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                  open={show}
+                  key={word}
+                  style={{ transform: "translate(-50%, 40%)" }}
+                >
+                  <div className={classes.topic}>
+                    <span>Draw: {word}</span>
+                  </div>
+                </Snackbar>
+              )}
             </div>
             {user._id ? (
               <div>
